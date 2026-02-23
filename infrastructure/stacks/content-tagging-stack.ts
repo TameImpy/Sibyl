@@ -171,6 +171,9 @@ export class ContentTaggingStack extends cdk.Stack {
         ...sharedEnv,
         GEMINI_API_KEY_SSM_PATH: `/sibyl/${environment}/gemini-api-key`,
         GEMINI_API_URL: 'https://generativelanguage.googleapis.com',
+        ENABLE_VIDEO_PROCESSING: 'true',
+        GEMINI_MOCK_ENABLED: 'true', // Remove when Gemini API key is available
+        FRAME_SAMPLING_INTERVAL: '15', // 1 frame per 15 seconds
       },
       bundling: {
         minify: true,

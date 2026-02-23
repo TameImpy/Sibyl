@@ -50,6 +50,10 @@ export interface AppConfig {
 
   // Routing
   confidenceThreshold: number; // 0.0–1.0; tags below this trigger human review
+
+  // Video processing
+  frameSamplingInterval: number; // seconds between sampled frames (default: 15)
+  geminiMockEnabled: boolean;
 }
 
 // Load config from environment with defaults for PoC
@@ -105,6 +109,10 @@ export function loadConfig(): AppConfig {
 
     // Routing
     confidenceThreshold: parseFloat(process.env.CONFIDENCE_THRESHOLD || '0.85'),
+
+    // Video processing
+    frameSamplingInterval: parseInt(process.env.FRAME_SAMPLING_INTERVAL || '15', 10),
+    geminiMockEnabled: process.env.GEMINI_MOCK_ENABLED === 'true',
   };
 }
 

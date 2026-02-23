@@ -1,5 +1,4 @@
 import { SQSEvent, SQSHandler, Context } from 'aws-lambda';
-import axios from 'axios';
 import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
@@ -16,8 +15,13 @@ import {
   getCircuitBreaker,
   retryWithBackoff,
   getMetricsCollector,
+  MetricsCollector,
 } from '../../shared/utils';
 import { loadConfig, validateConfig } from '../../shared/config';
+import { validateTags, formatTaxonomyForPrompt } from '../../shared/utils/taxonomy-loader';
+import { routeContent, RoutingDecision } from '../../shared/utils/routing';
+import { validateVideoFormat, sampleFrames, aggregateFrameTags } from './frame-aggregator';
+import { invokeGeminiForTagging } from './gemini-client';
 
 const logger = getLogger();
 const config = loadConfig();
@@ -35,19 +39,17 @@ const geminiCircuitBreaker = getCircuitBreaker('gemini', {
 let cachedGeminiApiKey: string | null = null;
 
 /**
- * Video Processor Lambda
+ * Video Processor Lambda — SQS entry point
  *
- * Processes video content using Gemini API (external)
- * Note: This is a placeholder for video processing. In production:
- * - Consider using ECS for long-running video processing tasks
- * - Implement proper video transcription/analysis pipeline
- * - Add multimodal analysis capabilities
- *
- * Implements same operational patterns as text processor:
- * - Circuit breaker for external API
- * - Retry with exponential backoff
- * - Cost tracking
- * - Structured logging
+ * Processes video content using Google Gemini API. Implements:
+ *  - Frame sampling at configurable interval (default: 1 frame/15 seconds)
+ *  - Per-frame tagging via Gemini (or placeholder mock)
+ *  - Frame aggregation to video-level tags (≥20% frame appearance threshold)
+ *  - Taxonomy validation with hallucination logging
+ *  - Confidence-based routing: ≥85% auto-publish, <85% → review queue
+ *  - Cost tracking (tokens → USD via MetricsCollector.calculateCost)
+ *  - Circuit breaker + retry with exponential backoff
+ *  - Structured logging for CloudWatch Insights
  */
 export const handler: SQSHandler = async (event: SQSEvent, context: Context): Promise<void> => {
   setLambdaContext(context.awsRequestId, context.functionName, context.functionVersion);
@@ -62,13 +64,12 @@ export const handler: SQSHandler = async (event: SQSEvent, context: Context): Pr
   });
 
   // Process videos sequentially to avoid overwhelming Gemini API
-  // In production with ECS, you can parallelize
   for (const record of event.Records) {
     try {
       await processRecord(record.body);
     } catch (error) {
       logger.error('Failed to process video record', {}, error as Error);
-      // Continue processing other records
+      // Continue processing other records; SQS handles individual retries
     }
   }
 
@@ -81,7 +82,6 @@ async function processRecord(messageBody: string): Promise<void> {
   let traceId: string;
 
   try {
-    // Parse and validate message
     const payload: SQSMessagePayload = SQSMessagePayloadSchema.parse(JSON.parse(messageBody));
     content = payload.content;
     traceId = payload.trace_id;
@@ -98,25 +98,33 @@ async function processRecord(messageBody: string): Promise<void> {
       duration_seconds: content.metadata?.duration_seconds,
     });
 
-    // Call Gemini API with circuit breaker and retry
-    const tags = await tagVideoWithGemini(content);
+    const { tags, inputTokens, outputTokens, costUsd } = await tagVideoWithGemini(content);
 
-    // Store results in DynamoDB
-    await storeResults(content, tags, startTime);
+    // Confidence-based routing decision
+    const routing = routeContent(tags, config.confidenceThreshold);
 
-    // Track metrics
-    await trackMetrics(content, tags, startTime, 'completed');
+    logger.info('Content routing decision', {
+      needs_review: routing.needs_review,
+      routing_reason: routing.routing_reason,
+      min_confidence: routing.min_confidence,
+      confidence_threshold: routing.confidence_threshold,
+    });
+
+    await storeResults(content, tags, routing, startTime, inputTokens + outputTokens, costUsd);
+    await trackMetrics(content, startTime, 'completed', inputTokens, outputTokens, costUsd);
 
     logger.info('Video content processed successfully', {
       tag_count: tags.length,
+      needs_review: routing.needs_review,
       processing_time_ms: Date.now() - startTime,
+      cost_usd: costUsd,
     });
   } catch (error) {
     const processingTimeMs = Date.now() - startTime;
     logger.error('Failed to process video content', { processing_time_ms: processingTimeMs }, error as Error);
 
     if (content!) {
-      await trackMetrics(content, [], startTime, 'failed', (error as Error).message);
+      await trackMetrics(content, startTime, 'failed', 0, 0, 0, (error as Error).message);
     }
 
     throw error;
@@ -145,48 +153,49 @@ async function getGeminiApiKey(): Promise<string> {
   return cachedGeminiApiKey;
 }
 
-async function tagVideoWithGemini(content: ContentInput): Promise<TagResult[]> {
-  const apiKey = await getGeminiApiKey();
-  const maxTags = content.processing_config?.max_tags || config.maxTagsPerContent;
+interface VideoTaggingResult {
+  tags: TagResult[];
+  inputTokens: number;
+  outputTokens: number;
+  costUsd: number;
+}
 
-  // Build prompt for Gemini
-  const prompt = buildVideoTaggingPrompt(content, maxTags);
+async function tagVideoWithGemini(content: ContentInput): Promise<VideoTaggingResult> {
+  const maxTags = content.processing_config?.max_tags ?? config.maxTagsPerContent;
+  const durationSeconds = content.metadata?.duration_seconds ?? 0;
+  const title = content.metadata?.title ?? '';
 
-  // Execute with circuit breaker and retry
-  const response = await geminiCircuitBreaker.execute(async () => {
+  // Validate video format from URL
+  if (content.content_url) {
+    validateVideoFormat(content.content_url);
+  }
+
+  // Compute frame sample list
+  const frames = sampleFrames(durationSeconds, config.frameSamplingInterval);
+
+  logger.debug('Frame sampling complete', {
+    frame_count: frames.length,
+    duration_seconds: durationSeconds,
+    interval_seconds: config.frameSamplingInterval,
+  });
+
+  // Skip SSM fetch in mock mode
+  const apiKey = config.geminiMockEnabled ? '' : await getGeminiApiKey();
+  const taxonomyText = formatTaxonomyForPrompt('grouped');
+
+  // Call Gemini with circuit breaker + retry
+  const { frameTags, inputTokens, outputTokens } = await geminiCircuitBreaker.execute(async () => {
     return await retryWithBackoff(
-      async () => {
-        // Gemini API call (placeholder - adjust based on actual API)
-        const apiResponse = await axios.post(
-          `${config.geminiApiUrl}/v1/models/gemini-1.5-flash:generateContent`,
-          {
-            contents: [
-              {
-                parts: [
-                  {
-                    text: prompt,
-                  },
-                  // In production, include video data here
-                  // { video: { data: base64Video } }
-                ],
-              },
-            ],
-            generationConfig: {
-              temperature: 0.3,
-              maxOutputTokens: 2048,
-            },
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-goog-api-key': apiKey,
-            },
-            timeout: 30000,
-          }
-        );
-
-        return apiResponse.data;
-      },
+      async () =>
+        invokeGeminiForTagging(
+          apiKey,
+          config.geminiApiUrl,
+          frames,
+          title,
+          taxonomyText,
+          maxTags,
+          config.geminiMockEnabled
+        ),
       {
         maxAttempts: 3,
         initialDelayMs: 2000,
@@ -196,55 +205,41 @@ async function tagVideoWithGemini(content: ContentInput): Promise<TagResult[]> {
     );
   });
 
-  const tags = parseGeminiResponse(response);
+  // Aggregate frame-level tags to video-level (≥20% frame appearance threshold)
+  const rawTags = aggregateFrameTags(frameTags);
 
-  logger.debug('Gemini video tagging completed', {
-    tag_count: tags.length,
+  // Taxonomy validation — detect hallucinated tags
+  const tagNames = rawTags.map((t) => t.tag);
+  const { valid: validTagNames, invalid: invalidTagNames } = validateTags(tagNames);
+
+  if (invalidTagNames.length > 0) {
+    logger.warn('HALLUCINATION DETECTED: Gemini returned tags not in taxonomy', {
+      invalid_tags: invalidTagNames,
+      content_id: content.content_id,
+    });
+  }
+
+  const tags = rawTags.filter((t) => validTagNames.includes(t.tag));
+
+  logger.debug('Taxonomy validation complete', {
+    raw_tag_count: rawTags.length,
+    valid_tag_count: tags.length,
+    invalid_tag_count: invalidTagNames.length,
   });
 
-  return tags;
-}
+  // Cost tracking (tokens → USD)
+  const costUsd = MetricsCollector.calculateCost('gemini-1.5-flash', inputTokens, outputTokens);
 
-function buildVideoTaggingPrompt(content: ContentInput, maxTags: number): string {
-  return `You are an expert video content tagging system. Analyze this video and return the ${maxTags} most relevant tags.
-
-Video metadata:
-- Title: ${content.metadata?.title || 'Unknown'}
-- Duration: ${content.metadata?.duration_seconds || 0} seconds
-- Source: ${content.metadata?.source || 'Unknown'}
-
-Requirements:
-1. Return ONLY tags that exist in the standard taxonomy
-2. Provide a confidence score (0-1) for each tag
-3. Return exactly ${maxTags} tags, ranked by relevance
-4. Format: JSON array of objects with "tag", "confidence", and brief "reasoning"
-
-Return ONLY the JSON array, no additional text.`;
-}
-
-function parseGeminiResponse(responseBody: unknown): TagResult[] {
-  // Parse Gemini's response format
-  const candidates = (responseBody as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> }).candidates;
-  if (!candidates?.[0]?.content?.parts?.[0]?.text) {
-    throw new Error('Invalid Gemini response format');
-  }
-
-  const text = candidates[0].content.parts[0].text;
-
-  // Extract JSON from response
-  const jsonMatch = text.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) {
-    throw new Error('No JSON array found in Gemini response');
-  }
-
-  const tags = JSON.parse(jsonMatch[0]) as TagResult[];
-  return tags;
+  return { tags, inputTokens, outputTokens, costUsd };
 }
 
 async function storeResults(
   content: ContentInput,
   tags: TagResult[],
-  startTime: number
+  routing: RoutingDecision,
+  startTime: number,
+  tokenCount: number,
+  costUsd: number
 ): Promise<void> {
   const now = new Date().toISOString();
   const processingTimeMs = Date.now() - startTime;
@@ -257,14 +252,24 @@ async function storeResults(
         content_type: content.content_type,
         status: ProcessingStatus.COMPLETED,
         tags,
+        needs_review: routing.needs_review,
+        source: routing.source,
+        reviewed: routing.reviewed,
+        routing_metadata: {
+          routing_reason: routing.routing_reason,
+          confidence_threshold: routing.confidence_threshold,
+          min_confidence: routing.min_confidence,
+        },
         processing_metadata: {
           model_used: 'gemini-1.5-flash',
           processing_time_ms: processingTimeMs,
+          token_count: tokenCount,
+          cost_usd: costUsd,
           retry_count: 0,
         },
         created_at: now,
         updated_at: now,
-        ttl: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
+        ttl: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60, // 1 year retention
       },
     })
   );
@@ -272,9 +277,11 @@ async function storeResults(
 
 async function trackMetrics(
   content: ContentInput,
-  _tags: TagResult[],
   startTime: number,
   status: string,
+  inputTokens: number,
+  outputTokens: number,
+  costUsd: number,
   errorMessage?: string
 ): Promise<void> {
   await metricsCollector.trackProcessing({
@@ -282,6 +289,8 @@ async function trackMetrics(
     content_type: content.content_type,
     model_used: 'gemini-1.5-flash',
     processing_time_ms: Date.now() - startTime,
+    token_count: inputTokens + outputTokens,
+    cost_usd: costUsd,
     status,
     timestamp: new Date().toISOString(),
     error_type: errorMessage,
