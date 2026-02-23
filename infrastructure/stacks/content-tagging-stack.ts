@@ -245,7 +245,7 @@ export class ContentTaggingStack extends cdk.Stack {
       alarmName: `sibyl-tagging-dlq-messages-${environment}`,
       alarmDescription: 'Messages in DLQ indicate processing failures',
       metric: dlq.metricApproximateNumberOfMessagesVisible(),
-      threshold: 1,
+      threshold: 10,
       evaluationPeriods: 1,
       comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
