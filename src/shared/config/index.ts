@@ -47,6 +47,9 @@ export interface AppConfig {
   enableVideoProcessing: boolean;
   enableTaxonomyCache: boolean;
   bedrockMockEnabled: boolean;
+
+  // Routing
+  confidenceThreshold: number; // 0.0–1.0; tags below this trigger human review
 }
 
 // Load config from environment with defaults for PoC
@@ -99,6 +102,9 @@ export function loadConfig(): AppConfig {
     enableVideoProcessing: process.env.ENABLE_VIDEO_PROCESSING === 'true',
     enableTaxonomyCache: process.env.ENABLE_TAXONOMY_CACHE !== 'false',
     bedrockMockEnabled: process.env.BEDROCK_MOCK_ENABLED === 'true',
+
+    // Routing
+    confidenceThreshold: parseFloat(process.env.CONFIDENCE_THRESHOLD || '0.85'),
   };
 }
 

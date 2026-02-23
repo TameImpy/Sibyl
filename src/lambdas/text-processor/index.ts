@@ -19,6 +19,7 @@ import {
 } from '../../shared/utils';
 import { loadConfig, validateConfig } from '../../shared/config';
 import { validateTags, formatTaxonomyForPrompt } from '../../shared/utils/taxonomy-loader';
+import { routeContent, RoutingDecision } from '../../shared/utils/routing';
 import { buildTaggingPrompt } from './prompts';
 import { invokeClaudeForTagging } from './bedrock-client';
 
@@ -41,6 +42,7 @@ const bedrockCircuitBreaker = getCircuitBreaker('bedrock', {
  * Amazon Bedrock. Implements:
  *  - Three-layer prompt architecture (prompts.ts)
  *  - Taxonomy validation with hallucination logging
+ *  - Confidence-based routing: ≥85% auto-publish, <85% → review queue (routing.ts)
  *  - Cost tracking (tokens → USD via MetricsCollector.calculateCost)
  *  - Circuit breaker + retry with exponential backoff
  *  - Structured logging for CloudWatch Insights
@@ -90,11 +92,22 @@ async function processRecord(messageBody: string): Promise<void> {
     const contentText = await getContentText(content);
     const { tags, inputTokens, outputTokens, costUsd } = await tagContentWithClaude(contentText, content);
 
-    await storeResults(content, tags, startTime, inputTokens + outputTokens, costUsd);
+    // Confidence-based routing decision
+    const routing = routeContent(tags, config.confidenceThreshold);
+
+    logger.info('Content routing decision', {
+      needs_review: routing.needs_review,
+      routing_reason: routing.routing_reason,
+      min_confidence: routing.min_confidence,
+      confidence_threshold: routing.confidence_threshold,
+    });
+
+    await storeResults(content, tags, routing, startTime, inputTokens + outputTokens, costUsd);
     await trackMetrics(content, tags, startTime, 'completed', inputTokens, outputTokens, costUsd);
 
     logger.info('Text content processed successfully', {
       tag_count: tags.length,
+      needs_review: routing.needs_review,
       processing_time_ms: Date.now() - startTime,
       cost_usd: costUsd,
     });
@@ -205,6 +218,7 @@ async function tagContentWithClaude(
 async function storeResults(
   content: ContentInput,
   tags: TagResult[],
+  routing: RoutingDecision,
   startTime: number,
   tokenCount: number,
   costUsd: number
@@ -220,6 +234,15 @@ async function storeResults(
         content_type: content.content_type,
         status: ProcessingStatus.COMPLETED,
         tags,
+        // Routing fields (POC-004) — needs_review is the needs-review-index GSI partition key
+        needs_review: routing.needs_review,
+        source: routing.source,
+        reviewed: routing.reviewed,
+        routing_metadata: {
+          routing_reason: routing.routing_reason,
+          confidence_threshold: routing.confidence_threshold,
+          min_confidence: routing.min_confidence,
+        },
         processing_metadata: {
           model_used: config.bedrockModelId,
           processing_time_ms: processingTimeMs,
