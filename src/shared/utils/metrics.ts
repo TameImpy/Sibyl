@@ -87,6 +87,7 @@ export class MetricsCollector {
       'anthropic.claude-3-haiku-20240307-v1:0': { input: 0.00025, output: 0.00125 },
       'anthropic.claude-3-sonnet-20240229-v1:0': { input: 0.003, output: 0.015 },
       'anthropic.claude-3-5-sonnet-20240620-v1:0': { input: 0.003, output: 0.015 },
+      'anthropic.claude-3-5-sonnet-20241022-v2:0': { input: 0.003, output: 0.015 },
       'gemini-1.5-flash': { input: 0.000075, output: 0.0003 },
       'gemini-1.5-pro': { input: 0.00125, output: 0.005 },
     };

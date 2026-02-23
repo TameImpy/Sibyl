@@ -1,5 +1,5 @@
 import { SQSEvent, SQSHandler, Context } from 'aws-lambda';
-import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
+import { BedrockRuntimeClient } from '@aws-sdk/client-bedrock-runtime';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import {
@@ -8,7 +8,6 @@ import {
   SQSMessagePayload,
   SQSMessagePayloadSchema,
   TagResult,
-  ContentType,
 } from '../../shared/types';
 import {
   getLogger,
@@ -19,6 +18,9 @@ import {
   MetricsCollector,
 } from '../../shared/utils';
 import { loadConfig, validateConfig } from '../../shared/config';
+import { validateTags, formatTaxonomyForPrompt } from '../../shared/utils/taxonomy-loader';
+import { buildTaggingPrompt } from './prompts';
+import { invokeClaudeForTagging } from './bedrock-client';
 
 const logger = getLogger();
 const config = loadConfig();
@@ -33,14 +35,15 @@ const bedrockCircuitBreaker = getCircuitBreaker('bedrock', {
 });
 
 /**
- * Text Processor Lambda
+ * Text Processor Lambda — SQS entry point
  *
- * Processes text content (articles, JSON, podcasts) using Claude on Amazon Bedrock
- * Implements:
- * - Circuit breaker pattern for Bedrock API
- * - Retry with exponential backoff
- * - Cost tracking
- * - Structured logging
+ * Processes text content (articles, JSON records, podcasts) using Claude on
+ * Amazon Bedrock. Implements:
+ *  - Three-layer prompt architecture (prompts.ts)
+ *  - Taxonomy validation with hallucination logging
+ *  - Cost tracking (tokens → USD via MetricsCollector.calculateCost)
+ *  - Circuit breaker + retry with exponential backoff
+ *  - Structured logging for CloudWatch Insights
  */
 export const handler: SQSHandler = async (event: SQSEvent, context: Context): Promise<void> => {
   setLambdaContext(context.awsRequestId, context.functionName, context.functionVersion);
@@ -49,12 +52,10 @@ export const handler: SQSHandler = async (event: SQSEvent, context: Context): Pr
     record_count: event.Records.length,
   });
 
-  // Process messages in parallel (but respect Lambda concurrency limits)
   const results = await Promise.allSettled(
     event.Records.map((record) => processRecord(record.body))
   );
 
-  // Log summary
   const successful = results.filter((r) => r.status === 'fulfilled').length;
   const failed = results.filter((r) => r.status === 'rejected').length;
 
@@ -71,7 +72,6 @@ async function processRecord(messageBody: string): Promise<void> {
   let traceId: string;
 
   try {
-    // Parse and validate message
     const payload: SQSMessagePayload = SQSMessagePayloadSchema.parse(JSON.parse(messageBody));
     content = payload.content;
     traceId = payload.trace_id;
@@ -87,32 +87,25 @@ async function processRecord(messageBody: string): Promise<void> {
       title: content.metadata?.title,
     });
 
-    // Get content text (from payload or fetch from S3 if URL provided)
     const contentText = await getContentText(content);
+    const { tags, inputTokens, outputTokens, costUsd } = await tagContentWithClaude(contentText, content);
 
-    // Call Bedrock with circuit breaker and retry
-    const tags = await tagContentWithBedrock(contentText, content);
-
-    // Store results in DynamoDB
-    await storeResults(content, tags, startTime);
-
-    // Track metrics
-    await trackMetrics(content, tags, startTime, 'completed');
+    await storeResults(content, tags, startTime, inputTokens + outputTokens, costUsd);
+    await trackMetrics(content, tags, startTime, 'completed', inputTokens, outputTokens, costUsd);
 
     logger.info('Text content processed successfully', {
       tag_count: tags.length,
       processing_time_ms: Date.now() - startTime,
+      cost_usd: costUsd,
     });
   } catch (error) {
     const processingTimeMs = Date.now() - startTime;
     logger.error('Failed to process text content', { processing_time_ms: processingTimeMs }, error as Error);
 
-    // Track failure metrics
     if (content!) {
-      await trackMetrics(content, [], startTime, 'failed', (error as Error).message);
+      await trackMetrics(content, [], startTime, 'failed', 0, 0, 0, (error as Error).message);
     }
 
-    // Re-throw to trigger SQS retry/DLQ
     throw error;
   } finally {
     logger.clearContext();
@@ -120,59 +113,59 @@ async function processRecord(messageBody: string): Promise<void> {
 }
 
 async function getContentText(content: ContentInput): Promise<string> {
-  // For PoC, assume text is in content_text field
-  // In production, fetch from S3 if content_url is provided
   if (content.content_text) {
     return content.content_text;
   }
 
   if (content.content_url) {
-    // TODO: Implement S3 fetch
+    // TODO: Implement S3 fetch for Phase 1
     throw new Error('S3 content fetching not yet implemented');
   }
 
   throw new Error('No content text or URL provided');
 }
 
-async function tagContentWithBedrock(
+interface TaggingResult {
+  tags: TagResult[];
+  inputTokens: number;
+  outputTokens: number;
+  costUsd: number;
+}
+
+async function tagContentWithClaude(
   contentText: string,
   content: ContentInput
-): Promise<TagResult[]> {
-  const maxTags = content.processing_config?.max_tags || config.maxTagsPerContent;
+): Promise<TaggingResult> {
+  const maxTags = content.processing_config?.max_tags ?? config.maxTagsPerContent;
+  const title = content.metadata?.title ?? '';
 
-  // Mock mode: bypass Bedrock entirely while account access is pending
-  if (config.bedrockMockEnabled) {
-    logger.warn('Bedrock mock mode enabled — returning synthetic tags');
-    return [
-      { tag: 'mock-tag-1', confidence: 0.95, reasoning: 'Mock response' },
-      { tag: 'mock-tag-2', confidence: 0.85, reasoning: 'Mock response' },
-      { tag: 'mock-tag-3', confidence: 0.75, reasoning: 'Mock response' },
-    ];
-  }
+  // Build three-layer prompt (runs even in mock mode)
+  const taxonomyText = formatTaxonomyForPrompt('grouped');
+  const { system, userMessage } = buildTaggingPrompt(
+    content.content_type,
+    title,
+    contentText,
+    taxonomyText,
+    maxTags
+  );
 
-  // Build prompt for Claude
-  const prompt = buildTaggingPrompt(contentText, maxTags, content.content_type);
+  logger.debug('Prompt layers constructed', {
+    system_length: system.length,
+    user_message_length: userMessage.length,
+    body_truncated: contentText.length > 32_000,
+  });
 
-  // Execute with circuit breaker and retry
-  const response = await bedrockCircuitBreaker.execute(async () => {
+  // Call Claude via circuit breaker + retry (mock short-circuits the API call only)
+  const { tags: rawTags, inputTokens, outputTokens } = await bedrockCircuitBreaker.execute(async () => {
     return await retryWithBackoff(
-      async () => {
-        const command = new InvokeModelCommand({
-          modelId: config.bedrockModelId,
-          contentType: 'application/json',
-          accept: 'application/json',
-          body: JSON.stringify({
-            inputText: prompt,
-            textGenerationConfig: {
-              maxTokenCount: 2048,
-              temperature: 0.3,
-              topP: 0.9,
-            },
-          }),
-        });
-
-        return await bedrockClient.send(command);
-      },
+      async () =>
+        invokeClaudeForTagging(
+          bedrockClient,
+          config.bedrockModelId,
+          system,
+          userMessage,
+          config.bedrockMockEnabled
+        ),
       {
         maxAttempts: 3,
         initialDelayMs: 1000,
@@ -182,67 +175,39 @@ async function tagContentWithBedrock(
     );
   });
 
-  // Parse response
-  const responseBody = JSON.parse(new TextDecoder().decode(response.body));
-  const tags = parseBedrockResponse(responseBody);
+  // Taxonomy validation — detect hallucinated tags
+  const tagNames = rawTags.map((t) => t.tag);
+  const { valid: validTagNames, invalid: invalidTagNames } = validateTags(tagNames);
 
-  logger.debug('Bedrock tagging completed', {
-    input_tokens: responseBody.inputTextTokenCount,
-    output_tokens: responseBody.results?.[0]?.tokenCount,
-    tag_count: tags.length,
+  if (invalidTagNames.length > 0) {
+    logger.warn('HALLUCINATION DETECTED: Claude returned tags not in taxonomy', {
+      invalid_tags: invalidTagNames,
+      content_id: content.content_id,
+      model: config.bedrockModelId,
+    });
+  }
+
+  // Keep only valid taxonomy tags in the final result
+  const tags = rawTags.filter((t) => validTagNames.includes(t.tag));
+
+  logger.debug('Taxonomy validation complete', {
+    raw_tag_count: rawTags.length,
+    valid_tag_count: tags.length,
+    invalid_tag_count: invalidTagNames.length,
   });
 
-  return tags;
-}
+  // Cost tracking (tokens → USD)
+  const costUsd = MetricsCollector.calculateCost(config.bedrockModelId, inputTokens, outputTokens);
 
-function buildTaggingPrompt(contentText: string, maxTags: number, contentType: ContentType): string {
-  return `You are an expert content tagging system. Analyze the following ${contentType} content and return the ${maxTags} most relevant tags from the provided taxonomy.
-
-Content to analyze:
-${contentText.substring(0, 10000)} ${contentText.length > 10000 ? '...(truncated)' : ''}
-
-Requirements:
-1. Return ONLY tags that exist in the taxonomy (no custom tags)
-2. Provide a confidence score (0-1) for each tag
-3. Return exactly ${maxTags} tags, ranked by relevance
-4. Format: JSON array of objects with "tag", "confidence", and brief "reasoning"
-
-Example response format:
-[
-  {
-    "tag": "slow-cooker-meals",
-    "confidence": 0.95,
-    "reasoning": "Article focuses on slow cooker recipes and techniques"
-  }
-]
-
-Return ONLY the JSON array, no additional text.`;
-}
-
-function parseBedrockResponse(responseBody: unknown): TagResult[] {
-  // Parse Titan's response and extract tags
-  // Titan returns { results: [{ outputText: "..." }], inputTextTokenCount: N }
-  const results = (responseBody as { results?: Array<{ outputText?: string }> }).results;
-  if (!results?.[0]?.outputText) {
-    throw new Error('Invalid Bedrock response format');
-  }
-
-  const text = results[0].outputText;
-
-  // Extract JSON from response (Claude might add explanation text)
-  const jsonMatch = text.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) {
-    throw new Error('No JSON array found in Bedrock response');
-  }
-
-  const tags = JSON.parse(jsonMatch[0]) as TagResult[];
-  return tags;
+  return { tags, inputTokens, outputTokens, costUsd };
 }
 
 async function storeResults(
   content: ContentInput,
   tags: TagResult[],
-  startTime: number
+  startTime: number,
+  tokenCount: number,
+  costUsd: number
 ): Promise<void> {
   const now = new Date().toISOString();
   const processingTimeMs = Date.now() - startTime;
@@ -258,6 +223,8 @@ async function storeResults(
         processing_metadata: {
           model_used: config.bedrockModelId,
           processing_time_ms: processingTimeMs,
+          token_count: tokenCount,
+          cost_usd: costUsd,
           retry_count: 0,
         },
         created_at: now,
@@ -270,9 +237,12 @@ async function storeResults(
 
 async function trackMetrics(
   content: ContentInput,
-  tags: TagResult[],
+  _tags: TagResult[],
   startTime: number,
   status: string,
+  inputTokens: number,
+  outputTokens: number,
+  costUsd: number,
   errorMessage?: string
 ): Promise<void> {
   await metricsCollector.trackProcessing({
@@ -280,6 +250,8 @@ async function trackMetrics(
     content_type: content.content_type,
     model_used: config.bedrockModelId,
     processing_time_ms: Date.now() - startTime,
+    token_count: inputTokens + outputTokens,
+    cost_usd: costUsd,
     status,
     timestamp: new Date().toISOString(),
     error_type: errorMessage,

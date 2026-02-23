@@ -272,7 +272,7 @@ async function storeResults(
 
 async function trackMetrics(
   content: ContentInput,
-  tags: TagResult[],
+  _tags: TagResult[],
   startTime: number,
   status: string,
   errorMessage?: string

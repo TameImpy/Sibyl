@@ -62,9 +62,9 @@ export function loadConfig(): AppConfig {
     videoProcessingQueueUrl: process.env.VIDEO_QUEUE_URL || '',
     dlqUrl: process.env.DLQ_URL || '',
 
-    // Bedrock - default to Claude Haiku for cost efficiency
+    // Bedrock - Claude 3.5 Sonnet v2 (BEDROCK_MOCK_ENABLED=true until account access restored)
     bedrockModelId:
-      process.env.BEDROCK_MODEL_ID || 'amazon.titan-text-express-v1',
+      process.env.BEDROCK_MODEL_ID || 'anthropic.claude-3-5-sonnet-20241022-v2:0',
     bedrockRegion: process.env.BEDROCK_REGION || 'us-east-1',
 
     // RDS

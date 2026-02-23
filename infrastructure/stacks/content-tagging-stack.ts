@@ -116,7 +116,7 @@ export class ContentTaggingStack extends cdk.Stack {
       TEXT_QUEUE_URL: textQueue.queueUrl,
       VIDEO_QUEUE_URL: videoQueue.queueUrl,
       DLQ_URL: dlq.queueUrl,
-      BEDROCK_MODEL_ID: 'amazon.titan-text-express-v1',
+      BEDROCK_MODEL_ID: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
       BEDROCK_REGION: 'us-east-1',
       LOG_LEVEL: 'info',
       ENABLE_STRUCTURED_LOGGING: 'true',
