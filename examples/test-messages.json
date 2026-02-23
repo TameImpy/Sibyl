@@ -1,0 +1,257 @@
+{
+  "text_content_examples": [
+    {
+      "description": "Food & Cooking article about slow cooker meals",
+      "message": {
+        "content": {
+          "content_id": "550e8400-e29b-41d4-a716-446655440001",
+          "content_type": "article",
+          "content_text": "The Ultimate Guide to Slow Cooker Meals: Transform your busy weeknights with these easy slow cooker recipes. Learn how to make tender pulled pork, hearty beef stew, and flavorful chicken dishes. Perfect for meal prep and batch cooking. These one-pot meals save time and deliver restaurant-quality results with minimal effort.",
+          "metadata": {
+            "title": "Ultimate Slow Cooker Meals Guide",
+            "author": "Chef Sarah",
+            "published_date": "2026-02-20T10:00:00Z",
+            "source": "cooking-blog"
+          },
+          "processing_config": {
+            "priority": "normal",
+            "max_tags": 10
+          }
+        },
+        "attempt": 1,
+        "max_attempts": 3,
+        "trace_id": "trace-001-slow-cooker"
+      },
+      "expected_tags": [
+        "slow-cooker-meals",
+        "one-pot-meals",
+        "meal-prep",
+        "batch-cooking",
+        "beef-recipes",
+        "chicken-recipes",
+        "pork-recipes"
+      ]
+    },
+    {
+      "description": "Home & Garden article about vegetable gardening",
+      "message": {
+        "content": {
+          "content_id": "550e8400-e29b-41d4-a716-446655440002",
+          "content_type": "article",
+          "content_text": "Starting a Vegetable Garden: A Beginner's Guide. Learn about raised bed gardening, composting, and organic pest control. Grow fresh tomatoes, lettuce, herbs, and more in your backyard. Container gardening tips for small spaces. Companion planting strategies to maximize your harvest.",
+          "metadata": {
+            "title": "Beginner's Guide to Vegetable Gardening",
+            "author": "Green Thumb Tom",
+            "published_date": "2026-02-20T11:00:00Z"
+          },
+          "processing_config": {
+            "priority": "normal",
+            "max_tags": 10
+          }
+        },
+        "attempt": 1,
+        "max_attempts": 3,
+        "trace_id": "trace-002-gardening"
+      },
+      "expected_tags": [
+        "vegetable-gardening",
+        "raised-bed-gardening",
+        "composting",
+        "organic-gardening",
+        "container-gardening",
+        "companion-planting",
+        "herb-gardening"
+      ]
+    },
+    {
+      "description": "Parenting article about toddler development",
+      "message": {
+        "content": {
+          "content_id": "550e8400-e29b-41d4-a716-446655440003",
+          "content_type": "article",
+          "content_text": "Toddler Development Milestones: What to Expect. Understanding speech development, motor skills, and social skills in 2-3 year olds. Potty training tips and positive discipline strategies. Indoor and outdoor activities to support your toddler's growth. Managing tantrums and bedtime routines.",
+          "metadata": {
+            "title": "Toddler Development Guide",
+            "author": "Dr. Parent",
+            "published_date": "2026-02-20T12:00:00Z"
+          },
+          "processing_config": {
+            "priority": "normal",
+            "max_tags": 10
+          }
+        },
+        "attempt": 1,
+        "max_attempts": 3,
+        "trace_id": "trace-003-toddler"
+      },
+      "expected_tags": [
+        "toddler-development",
+        "speech-development",
+        "motor-skills",
+        "social-skills",
+        "potty-training",
+        "positive-discipline",
+        "tantrums",
+        "bedtime-routines"
+      ]
+    },
+    {
+      "description": "Automotive article about car maintenance",
+      "message": {
+        "content": {
+          "content_id": "550e8400-e29b-41d4-a716-446655440004",
+          "content_type": "article",
+          "content_text": "Essential Car Maintenance for Every Driver. Learn when to change your oil, rotate tires, and replace brake pads. DIY car maintenance tips to save money. Understanding your vehicle's preventive maintenance schedule. Seasonal maintenance for winter and summer driving.",
+          "metadata": {
+            "title": "Essential Car Maintenance Guide",
+            "author": "Mechanic Mike",
+            "published_date": "2026-02-20T13:00:00Z"
+          },
+          "processing_config": {
+            "priority": "normal",
+            "max_tags": 10
+          }
+        },
+        "attempt": 1,
+        "max_attempts": 3,
+        "trace_id": "trace-004-car-maintenance"
+      },
+      "expected_tags": [
+        "car-maintenance",
+        "oil-changes",
+        "tire-maintenance",
+        "brake-service",
+        "diy-car-repair",
+        "preventive-maintenance",
+        "seasonal-maintenance",
+        "winter-car-care"
+      ]
+    },
+    {
+      "description": "Podcast transcript about keto diet",
+      "message": {
+        "content": {
+          "content_id": "550e8400-e29b-41d4-a716-446655440005",
+          "content_type": "podcast",
+          "content_text": "[TRANSCRIPT] In today's episode, we discuss the ketogenic diet and low-carb meal planning. Our guest nutritionist explains how to prepare keto-friendly recipes, including high-protein breakfast options, sugar-free desserts, and meal prep strategies for busy professionals. We cover common keto mistakes and how to maintain ketosis.",
+          "metadata": {
+            "title": "Keto Diet Essentials Podcast",
+            "author": "Health Talk Podcast",
+            "published_date": "2026-02-20T14:00:00Z",
+            "duration_seconds": 1800
+          },
+          "processing_config": {
+            "priority": "normal",
+            "max_tags": 10
+          }
+        },
+        "attempt": 1,
+        "max_attempts": 3,
+        "trace_id": "trace-005-keto-podcast"
+      },
+      "expected_tags": [
+        "keto-recipes",
+        "low-carb-meals",
+        "high-protein-meals",
+        "sugar-free-recipes",
+        "meal-prep",
+        "breakfast-recipes",
+        "desserts"
+      ]
+    },
+    {
+      "description": "JSON data with minimal text",
+      "message": {
+        "content": {
+          "content_id": "550e8400-e29b-41d4-a716-446655440006",
+          "content_type": "json",
+          "content_text": "{\"title\": \"10 Best Board Games for Family Game Night\", \"summary\": \"Discover the top board games perfect for family bonding and indoor activities. Includes strategy games, card games, and party games suitable for all ages. Great for rainy day entertainment.\", \"tags_suggested\": [\"family-games\", \"board-games\", \"indoor-activities\"]}",
+          "metadata": {
+            "title": "Board Games JSON Data",
+            "source": "games-api"
+          },
+          "processing_config": {
+            "priority": "low",
+            "max_tags": 8
+          }
+        },
+        "attempt": 1,
+        "max_attempts": 3,
+        "trace_id": "trace-006-json"
+      },
+      "expected_tags": [
+        "board-games",
+        "family-games",
+        "indoor-activities",
+        "family-bonding"
+      ]
+    }
+  ],
+  "video_content_examples": [
+    {
+      "description": "Cooking video",
+      "message": {
+        "content": {
+          "content_id": "550e8400-e29b-41d4-a716-446655440007",
+          "content_type": "video",
+          "content_url": "s3://content-bucket/videos/air-fryer-cooking.mp4",
+          "metadata": {
+            "title": "Air Fryer Cooking Basics",
+            "duration_seconds": 600,
+            "author": "Kitchen Pro"
+          },
+          "processing_config": {
+            "priority": "high",
+            "model_preference": "gemini",
+            "max_tags": 10
+          }
+        },
+        "attempt": 1,
+        "max_attempts": 3,
+        "trace_id": "trace-007-video"
+      },
+      "expected_tags": [
+        "air-fryer-cooking",
+        "quick-meals",
+        "cooking-methods"
+      ]
+    }
+  ],
+  "error_test_cases": [
+    {
+      "description": "Invalid UUID",
+      "message": {
+        "content": {
+          "content_id": "not-a-uuid",
+          "content_type": "article",
+          "content_text": "Test content"
+        },
+        "attempt": 1,
+        "trace_id": "trace-error-001"
+      },
+      "expected_result": "Validation error, message sent to DLQ"
+    },
+    {
+      "description": "Missing required fields",
+      "message": {
+        "content": {
+          "content_type": "article"
+        }
+      },
+      "expected_result": "Validation error, message sent to DLQ"
+    },
+    {
+      "description": "Empty content",
+      "message": {
+        "content": {
+          "content_id": "550e8400-e29b-41d4-a716-446655440999",
+          "content_type": "article",
+          "content_text": ""
+        },
+        "attempt": 1,
+        "trace_id": "trace-error-003"
+      },
+      "expected_result": "Processing error, may retry or DLQ"
+    }
+  ]
+}
