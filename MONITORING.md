@@ -187,7 +187,55 @@ Alarms are defined in `infrastructure/stacks/content-tagging-stack.ts` and deplo
 | Alarm | Condition | Action |
 |-------|-----------|--------|
 | `sibyl-tagging-dlq-messages-{env}` | DLQ depth ≥ 10 | SNS notification |
-| `sibyl-text-processor-errors-{env}` | Lambda error count ≥ 5 in 5 min | SNS notification |
+| `sibyl-text-processor-errors-{env}` | Lambda error count ≥ 10 in 5 min | SNS notification |
+| `sibyl-text-processor-error-rate-{env}` | Error rate > 5% over 15 min | SNS notification |
+| `sibyl-tagging-daily-cost-{env}` | Daily cost > $10 (dev) / $100 (prod) | SNS notification |
+
+---
+
+## CloudWatch Dashboard
+
+Dashboard name: **`sibyl-tagging-{env}`** (e.g. `sibyl-tagging-dev`)
+
+**Access:** After `cdk deploy`, the dashboard URL is emitted as a CloudFormation output (`DashboardUrl`). Navigate directly to:
+```
+https://{region}.console.aws.amazon.com/cloudwatch/home#dashboards:name=sibyl-tagging-{env}
+```
+
+### Dashboard Layout
+
+**Row 1 — Headline numbers (single-value widgets)**
+
+```
+┌─────────────────────┬─────────────┬──────────────────────┬───────────────────────┐
+│  Alarm Status       │  DLQ Depth  │  Daily Cost (USD)    │  Items Processed 24h  │
+│  (4 alarms)         │  (max/5min) │  (custom metric)     │  (Lambda invocations) │
+└─────────────────────┴─────────────┴──────────────────────┴───────────────────────┘
+```
+
+**Row 2 — Processing volume + error rate (graphs)**
+
+```
+┌──────────────────────────────────────┬────────────────────────────────────────┐
+│  Items Processed per Hour            │  Error Rate (%)                        │
+│  text-processor + video-processor    │  errors / invocations × 100            │
+│  (sum, 1h period)                    │  (15-min period, alarm line at 5%)     │
+└──────────────────────────────────────┴────────────────────────────────────────┘
+```
+
+**Row 3 — Latency + DLQ trend (graphs)**
+
+```
+┌──────────────────────────────────────┬────────────────────────────────────────┐
+│  Lambda Duration p95 (ms)            │  DLQ Depth over time                   │
+│  text-processor + video-processor    │  (max/5min)                            │
+└──────────────────────────────────────┴────────────────────────────────────────┘
+```
+
+### Notes
+
+- **Daily Processing Cost** uses the custom CloudWatch metric `Sibyl/Tagging/DailyProcessingCost`. In PoC mode `MetricsCollector` writes to DynamoDB rather than CloudWatch, so this widget will show no data until `MetricsCollector.emitCloudWatchMetric()` is wired to `CloudWatch.putMetricData` (Phase 1 task).
+- All other metrics use built-in Lambda and SQS metrics — they populate automatically on first invocation.
 
 ---
 

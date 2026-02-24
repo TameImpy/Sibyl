@@ -283,6 +283,32 @@ export class ContentTaggingStack extends cdk.Stack {
     });
     textProcessorThrottleAlarm.addAlarmAction(new cloudwatch_actions.SnsAction(alarmTopic));
 
+    // Alarm: error rate >5% over 15 minutes (POC-012)
+    const errorRateAlarm = new cloudwatch.Alarm(this, 'TextProcessorErrorRateAlarm', {
+      alarmName: `sibyl-text-processor-error-rate-${environment}`,
+      alarmDescription: 'Text processor error rate exceeds 5% over 15 minutes',
+      metric: new cloudwatch.MathExpression({
+        expression: '100 * errors / MAX([errors, invocations])',
+        usingMetrics: {
+          errors: textProcessor.metricErrors({
+            statistic: 'sum',
+            period: cdk.Duration.minutes(15),
+          }),
+          invocations: textProcessor.metricInvocations({
+            statistic: 'sum',
+            period: cdk.Duration.minutes(15),
+          }),
+        },
+        label: 'Error Rate (%)',
+        period: cdk.Duration.minutes(15),
+      }),
+      threshold: 5,
+      evaluationPeriods: 1,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    });
+    errorRateAlarm.addAlarmAction(new cloudwatch_actions.SnsAction(alarmTopic));
+
     // ==========================================
     // Cost Monitoring
     // ==========================================
@@ -310,8 +336,137 @@ export class ContentTaggingStack extends cdk.Stack {
     costAlarm.addAlarmAction(new cloudwatch_actions.SnsAction(alarmTopic));
 
     // ==========================================
+    // CloudWatch Dashboard (POC-012)
+    // ==========================================
+
+    new cloudwatch.Dashboard(this, 'TaggingDashboard', {
+      dashboardName: `sibyl-tagging-${environment}`,
+      widgets: [
+        // Row 1: alarm status + key headline numbers
+        [
+          new cloudwatch.AlarmStatusWidget({
+            title: 'Alarm Status',
+            alarms: [dlqAlarm, costAlarm, textProcessorErrorAlarm, errorRateAlarm],
+            width: 6,
+            height: 4,
+          }),
+          new cloudwatch.SingleValueWidget({
+            title: 'DLQ Depth',
+            metrics: [
+              dlq.metricApproximateNumberOfMessagesVisible({
+                statistic: 'max',
+                period: cdk.Duration.minutes(5),
+              }),
+            ],
+            width: 6,
+            height: 4,
+          }),
+          new cloudwatch.SingleValueWidget({
+            title: 'Daily Processing Cost (USD)',
+            metrics: [dailyCostMetric],
+            width: 6,
+            height: 4,
+          }),
+          new cloudwatch.SingleValueWidget({
+            title: 'Items Processed (last 24h)',
+            metrics: [
+              textProcessor.metricInvocations({
+                statistic: 'sum',
+                period: cdk.Duration.days(1),
+                label: 'Text + Video',
+              }),
+            ],
+            width: 6,
+            height: 4,
+          }),
+        ],
+        // Row 2: processing volume + error rate
+        [
+          new cloudwatch.GraphWidget({
+            title: 'Items Processed per Hour',
+            left: [
+              textProcessor.metricInvocations({
+                statistic: 'sum',
+                period: cdk.Duration.hours(1),
+                label: 'Text Processor',
+              }),
+              videoProcessor.metricInvocations({
+                statistic: 'sum',
+                period: cdk.Duration.hours(1),
+                label: 'Video Processor',
+              }),
+            ],
+            width: 12,
+            height: 6,
+          }),
+          new cloudwatch.GraphWidget({
+            title: 'Error Rate (%)',
+            left: [
+              new cloudwatch.MathExpression({
+                expression: '100 * errors / MAX([errors, invocations])',
+                usingMetrics: {
+                  errors: textProcessor.metricErrors({
+                    statistic: 'sum',
+                    period: cdk.Duration.minutes(15),
+                  }),
+                  invocations: textProcessor.metricInvocations({
+                    statistic: 'sum',
+                    period: cdk.Duration.minutes(15),
+                  }),
+                },
+                label: 'Text Processor Error Rate (%)',
+                period: cdk.Duration.minutes(15),
+              }),
+            ],
+            leftYAxis: { min: 0, max: 100 },
+            width: 12,
+            height: 6,
+          }),
+        ],
+        // Row 3: latency + DLQ trend
+        [
+          new cloudwatch.GraphWidget({
+            title: 'Lambda Duration p95 (ms)',
+            left: [
+              textProcessor.metricDuration({
+                statistic: 'p95',
+                period: cdk.Duration.minutes(5),
+                label: 'Text Processor',
+              }),
+              videoProcessor.metricDuration({
+                statistic: 'p95',
+                period: cdk.Duration.minutes(5),
+                label: 'Video Processor',
+              }),
+            ],
+            width: 12,
+            height: 6,
+          }),
+          new cloudwatch.GraphWidget({
+            title: 'DLQ Depth',
+            left: [
+              dlq.metricApproximateNumberOfMessagesVisible({
+                statistic: 'max',
+                period: cdk.Duration.minutes(5),
+                label: 'DLQ Messages',
+              }),
+            ],
+            width: 12,
+            height: 6,
+          }),
+        ],
+      ],
+    });
+
+    // ==========================================
     // Outputs
     // ==========================================
+
+    new cdk.CfnOutput(this, 'DashboardUrl', {
+      value: `https://${this.region}.console.aws.amazon.com/cloudwatch/home#dashboards:name=sibyl-tagging-${environment}`,
+      description: 'CloudWatch dashboard URL',
+      exportName: `sibyl-dashboard-url-${environment}`,
+    });
 
     new cdk.CfnOutput(this, 'TextQueueUrl', {
       value: textQueue.queueUrl,
