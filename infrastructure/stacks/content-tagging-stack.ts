@@ -8,6 +8,7 @@ import * as logs from 'aws-cdk-lib/aws-logs';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as cloudwatch_actions from 'aws-cdk-lib/aws-cloudwatch-actions';
 import * as sns from 'aws-cdk-lib/aws-sns';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { Construct } from 'constructs';
 import * as path from 'path';
@@ -79,6 +80,24 @@ export class ContentTaggingStack extends cdk.Stack {
     });
 
     // ==========================================
+    // S3 Bucket for Video Uploads
+    // ==========================================
+
+    const contentUploadBucket = new s3.Bucket(this, 'ContentUploadBucket', {
+      bucketName: `sibyl-content-uploads-${environment}-${this.account}`,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+      lifecycleRules: [{ expiration: cdk.Duration.days(7) }],
+      cors: [{
+        allowedMethods: [s3.HttpMethods.PUT],
+        allowedOrigins: ['http://localhost:3000', 'https://*'],
+        allowedHeaders: ['*'],
+        maxAge: 3000,
+      }],
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+    });
+
+    // ==========================================
     // SQS Queues
     // ==========================================
 
@@ -104,7 +123,7 @@ export class ContentTaggingStack extends cdk.Stack {
     // Video processing queue
     const videoQueue = new sqs.Queue(this, 'VideoProcessingQueue', {
       queueName: `sibyl-video-processing-${environment}`,
-      visibilityTimeout: cdk.Duration.seconds(180),
+      visibilityTimeout: cdk.Duration.seconds(1800), // must be ≥6x Lambda timeout (300s)
       retentionPeriod: cdk.Duration.days(4),
       encryption: sqs.QueueEncryption.SQS_MANAGED,
       deadLetterQueue: {
@@ -125,15 +144,15 @@ export class ContentTaggingStack extends cdk.Stack {
       TEXT_QUEUE_URL: textQueue.queueUrl,
       VIDEO_QUEUE_URL: videoQueue.queueUrl,
       DLQ_URL: dlq.queueUrl,
-      BEDROCK_MODEL_ID: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+      BEDROCK_MODEL_ID: 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
       BEDROCK_REGION: 'us-east-1',
       LOG_LEVEL: 'info',
       ENABLE_STRUCTURED_LOGGING: 'true',
       COST_TRACKING_ENABLED: 'true',
       CIRCUIT_BREAKER_THRESHOLD: '5',
       CIRCUIT_BREAKER_TIMEOUT: '60000',
-      ENABLE_VIDEO_PROCESSING: 'false', // Disable until Gemini integration ready
-      BEDROCK_MOCK_ENABLED: 'true', // Remove when Bedrock access restored
+      ENABLE_VIDEO_PROCESSING: 'true',
+      BEDROCK_MOCK_ENABLED: 'false',
       CONFIDENCE_THRESHOLD: '0.85', // Tags below this → needs_review: true (POC-004)
     };
 
@@ -145,7 +164,7 @@ export class ContentTaggingStack extends cdk.Stack {
       handler: 'handler',
       timeout: cdk.Duration.seconds(30),
       memorySize: 512, // 512MB for text processing
-      reservedConcurrentExecutions: environment === 'prod' ? 100 : 10, // Prevent runaway costs
+      reservedConcurrentExecutions: environment === 'prod' ? 100 : undefined, // Only reserve in prod
       environment: sharedEnv,
       bundling: {
         minify: true,
@@ -153,6 +172,14 @@ export class ContentTaggingStack extends cdk.Stack {
         target: 'es2022',
         externalModules: ['aws-sdk'], // Use AWS SDK from Lambda runtime
         forceDockerBundling: false, // Use local bundling (no Docker required)
+        commandHooks: {
+          beforeBundling: () => [],
+          beforeInstall: () => [],
+          afterBundling: (_inputDir: string, outputDir: string) => [
+            `mkdir -p ${outputDir}/data/taxonomy`,
+            `cp ${path.join(__dirname, '../../../data/taxonomy/taxonomy-v1.json')} ${outputDir}/data/taxonomy/taxonomy-v1.json`,
+          ],
+        },
       },
       logRetention: logs.RetentionDays.ONE_WEEK,
       tracing: lambda.Tracing.ACTIVE, // Enable X-Ray tracing
@@ -164,16 +191,17 @@ export class ContentTaggingStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_20_X,
       entry: path.join(__dirname, '../../src/lambdas/video-processor/index.ts'),
       handler: 'handler',
-      timeout: cdk.Duration.seconds(30),
-      memorySize: 1024, // 1GB for video metadata processing
-      reservedConcurrentExecutions: environment === 'prod' ? 50 : 10,
+      timeout: cdk.Duration.seconds(300),
+      memorySize: 3008, // 3GB — full video buffer (435MB file + runtime overhead) requires headroom
+      reservedConcurrentExecutions: environment === 'prod' ? 50 : undefined, // Only reserve in prod
       environment: {
         ...sharedEnv,
         GEMINI_API_KEY_SSM_PATH: `/sibyl/${environment}/gemini-api-key`,
         GEMINI_API_URL: 'https://generativelanguage.googleapis.com',
         ENABLE_VIDEO_PROCESSING: 'true',
-        GEMINI_MOCK_ENABLED: 'true', // Remove when Gemini API key is available
+        GEMINI_MOCK_ENABLED: 'false',
         FRAME_SAMPLING_INTERVAL: '15', // 1 frame per 15 seconds
+        S3_CONTENT_BUCKET: contentUploadBucket.bucketName,
       },
       bundling: {
         minify: true,
@@ -181,6 +209,14 @@ export class ContentTaggingStack extends cdk.Stack {
         target: 'es2022',
         externalModules: ['aws-sdk'],
         forceDockerBundling: false, // Use local bundling (no Docker required)
+        commandHooks: {
+          beforeBundling: () => [],
+          beforeInstall: () => [],
+          afterBundling: (_inputDir: string, outputDir: string) => [
+            `mkdir -p ${outputDir}/data/taxonomy`,
+            `cp ${path.join(__dirname, '../../../data/taxonomy/taxonomy-v1.json')} ${outputDir}/data/taxonomy/taxonomy-v1.json`,
+          ],
+        },
       },
       logRetention: logs.RetentionDays.ONE_WEEK,
       tracing: lambda.Tracing.ACTIVE,
@@ -197,12 +233,15 @@ export class ContentTaggingStack extends cdk.Stack {
     costTable.grantReadWriteData(videoProcessor);
 
     // Bedrock permissions for text processor
+    // Cross-region inference profile requires both the profile ARN and the
+    // underlying foundation model across all regions it may route to
     textProcessor.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: ['bedrock:InvokeModel'],
         resources: [
-          `arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0`,
+          `arn:aws:bedrock:${this.region}:${this.account}:inference-profile/us.anthropic.claude-3-5-haiku-20241022-v1:0`,
+          `arn:aws:bedrock:*::foundation-model/anthropic.claude-3-5-haiku-20241022-v1:0`,
         ],
       })
     );
@@ -217,6 +256,9 @@ export class ContentTaggingStack extends cdk.Stack {
         ],
       })
     );
+
+    // S3 read access for video processor
+    contentUploadBucket.grantRead(videoProcessor);
 
     // ==========================================
     // Event Sources
@@ -490,6 +532,12 @@ export class ContentTaggingStack extends cdk.Stack {
       value: tagsTable.tableStreamArn || 'N/A',
       description: 'Tags table stream ARN for Azure sync',
       exportName: `sibyl-tags-stream-arn-${environment}`,
+    });
+
+    new cdk.CfnOutput(this, 'ContentUploadBucketName', {
+      value: contentUploadBucket.bucketName,
+      description: 'S3 bucket for video uploads',
+      exportName: `sibyl-content-upload-bucket-${environment}`,
     });
   }
 }

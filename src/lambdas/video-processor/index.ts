@@ -2,6 +2,7 @@ import { SQSEvent, SQSHandler, Context } from 'aws-lambda';
 import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import {
   ContentInput,
   ProcessingStatus,
@@ -29,6 +30,7 @@ validateConfig(config);
 
 const ssmClient = new SSMClient({});
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const s3Client = new S3Client({});
 const metricsCollector = getMetricsCollector();
 const geminiCircuitBreaker = getCircuitBreaker('gemini', {
   failureThreshold: config.circuitBreakerThreshold,
@@ -37,6 +39,35 @@ const geminiCircuitBreaker = getCircuitBreaker('gemini', {
 
 // Cache API key to avoid repeated SSM calls
 let cachedGeminiApiKey: string | null = null;
+
+// ---------------------------------------------------------------------------
+// S3 helpers
+// ---------------------------------------------------------------------------
+
+function parseS3Url(url: string): { bucket: string; key: string } {
+  if (url.startsWith('s3://')) {
+    const path = url.slice(5);
+    const slash = path.indexOf('/');
+    return { bucket: path.slice(0, slash), key: path.slice(slash + 1) };
+  }
+  const slash = url.indexOf('/');
+  return { bucket: url.slice(0, slash), key: url.slice(slash + 1) };
+}
+
+async function downloadFromS3(bucket: string, key: string): Promise<{ bytes: Buffer; mimeType: string }> {
+  const res = await s3Client.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of res.Body as AsyncIterable<Uint8Array>) {
+    chunks.push(chunk);
+  }
+  const ext = key.split('.').pop()?.toLowerCase() ?? 'mp4';
+  const mime: Record<string, string> = {
+    mp4: 'video/mp4',
+    mov: 'video/quicktime',
+    avi: 'video/x-msvideo',
+  };
+  return { bytes: Buffer.concat(chunks), mimeType: mime[ext] ?? 'video/mp4' };
+}
 
 /**
  * Video Processor Lambda — SQS entry point
@@ -179,6 +210,21 @@ async function tagVideoWithGemini(content: ContentInput): Promise<VideoTaggingRe
     interval_seconds: config.frameSamplingInterval,
   });
 
+  // Download video bytes from S3 in real mode
+  let videoBytes: Buffer | undefined;
+  let videoMimeType: string | undefined;
+  if (!config.geminiMockEnabled && content.content_url) {
+    logger.info('Downloading video from S3', { url: content.content_url });
+    const { bucket, key } = parseS3Url(content.content_url);
+    const downloaded = await downloadFromS3(bucket, key);
+    videoBytes = downloaded.bytes;
+    videoMimeType = downloaded.mimeType;
+    logger.info('Video downloaded from S3', {
+      size_bytes: videoBytes.length,
+      mime_type: videoMimeType,
+    });
+  }
+
   // Skip SSM fetch in mock mode
   const apiKey = config.geminiMockEnabled ? '' : await getGeminiApiKey();
   const taxonomyText = formatTaxonomyForPrompt('grouped');
@@ -194,7 +240,9 @@ async function tagVideoWithGemini(content: ContentInput): Promise<VideoTaggingRe
           title,
           taxonomyText,
           maxTags,
-          config.geminiMockEnabled
+          config.geminiMockEnabled,
+          videoBytes,
+          videoMimeType
         ),
       {
         maxAttempts: 3,

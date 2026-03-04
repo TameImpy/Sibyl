@@ -69,7 +69,12 @@ function buildTaggingPrompt(content: TextContent, taxonomyText: string): string 
 
 INSTRUCTIONS:
 1. Read and understand the content carefully
-2. Identify the main topics, themes, subjects, and activities discussed
+2. Scan ALL of the following dimensions — do not stop at the primary topic:
+   a. Primary subject/topic — what is the content mainly about?
+   b. Content format — is it an interview, review, preview, profile, or recommendation piece?
+   c. Source materials and referenced works — are any books, novels, films, shows, or other works explicitly mentioned or discussed? Tag those works' categories (e.g. a novel series mentioned → fiction-books).
+   d. Tangential subjects — topics mentioned in passing, backstory, or context that readers may also care about
+   e. Tone and recommendation signals — does the article enthusiastically recommend or champion the content? (e.g. "must watch", "unmissable", strong positive framing → binge-worthy-shows)
 3. Assign ONLY tags from the provided taxonomy that are relevant
 4. For each tag, provide a confidence score between 0 and 1:
    - 0.9-1.0: Tag is central to the content

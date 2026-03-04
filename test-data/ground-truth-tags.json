@@ -1,0 +1,702 @@
+{
+  "TC-001": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["air-fryer-cooking", "chicken-recipes", "snacks", "dinner-recipes"],
+    "min_expected": ["air-fryer-cooking", "chicken-recipes"],
+    "reject_tags": ["electric-vehicles", "lawn-care", "baby-gear"],
+    "notes": "Short food article — clear air fryer and chicken signals"
+  },
+  "TC-002": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["pasta-recipes", "30-minute-meals", "dinner-recipes", "vegetarian-recipes"],
+    "min_expected": ["pasta-recipes", "30-minute-meals"],
+    "reject_tags": ["oil-changes", "indoor-gardening", "board-games"],
+    "notes": "Quick pasta dinner — 30-minute meals and pasta should be high confidence"
+  },
+  "TC-003": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["chicken-recipes"],
+    "min_expected": [],
+    "reject_tags": ["electric-vehicles", "lawn-care"],
+    "notes": "Edge case: very short content. System should return at least chicken-recipes but confidence may be low"
+  },
+  "TC-004": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["vegetarian-recipes", "vegan-recipes", "bowls", "french-cooking", "mediterranean-diet"],
+    "min_expected": ["vegetarian-recipes"],
+    "reject_tags": ["oil-changes", "teen-parenting", "electric-vehicles"],
+    "notes": "Edge case: Unicode content. Should still tag the food content despite special characters"
+  },
+  "TC-005": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["slow-cooker-meals", "beef-recipes", "meal-prep", "batch-cooking", "make-ahead-meals", "freezer-meals"],
+    "min_expected": ["slow-cooker-meals", "beef-recipes", "meal-prep"],
+    "reject_tags": ["electric-vehicles", "diy-projects", "homeschooling"],
+    "notes": "Long food article — strong signal for slow cooker and beef. Meal prep mentioned explicitly"
+  },
+  "TC-006": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["keto-recipes", "low-carb-meals", "high-protein-meals", "meal-prep", "meal-planning-tips"],
+    "min_expected": ["keto-recipes", "low-carb-meals", "meal-prep"],
+    "reject_tags": ["electric-vehicles", "tile-installation", "teen-parenting"],
+    "notes": "Long keto guide — keto and meal prep signals are dominant and explicit"
+  },
+  "TC-007": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["sourdough-bread", "bread-baking", "italian-cuisine", "yeast-baking"],
+    "min_expected": ["sourdough-bread", "bread-baking"],
+    "reject_tags": ["oil-changes", "video-games", "baby-sleep-training"],
+    "notes": "Italian sourdough bread — sourdough and bread baking are unambiguous"
+  },
+  "TC-008": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["indian-cuisine", "chicken-recipes", "dinner-recipes", "spice-blends"],
+    "min_expected": ["indian-cuisine", "chicken-recipes"],
+    "reject_tags": ["electric-vehicles", "lawn-care", "screen-time-limits"],
+    "notes": "Indian butter chicken — strong cuisine and protein signals"
+  },
+  "TC-009": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["drywall-repair", "diy-projects", "home-improvement", "home-maintenance"],
+    "min_expected": ["drywall-repair", "diy-projects"],
+    "reject_tags": ["chicken-recipes", "electric-vehicles", "baby-gear"],
+    "notes": "Short DIY drywall article — drywall and DIY should be high confidence"
+  },
+  "TC-010": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["lawn-care", "seasonal-maintenance", "pest-control", "garden-maintenance"],
+    "min_expected": ["lawn-care", "seasonal-maintenance"],
+    "reject_tags": ["pasta-recipes", "electric-vehicles", "homeschooling"],
+    "notes": "Lawn care guide — lawn care and seasonal maintenance are explicit"
+  },
+  "TC-011": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["decluttering", "storage-solutions", "organization-hacks", "cleaning-tips"],
+    "min_expected": ["decluttering", "storage-solutions"],
+    "reject_tags": ["keto-recipes", "oil-changes", "teen-parenting"],
+    "notes": "Pantry organization — decluttering and storage solutions are the primary tags"
+  },
+  "TC-012": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["plumbing-repair", "diy-projects", "home-maintenance"],
+    "min_expected": ["plumbing-repair", "home-maintenance"],
+    "reject_tags": ["bread-baking", "electric-vehicles", "baby-led-weaning"],
+    "notes": "Dripping faucet DIY fix — plumbing repair is the unambiguous primary tag"
+  },
+  "TC-013": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["bathroom-remodel", "tile-installation", "home-renovation", "diy-projects"],
+    "min_expected": ["bathroom-remodel", "tile-installation"],
+    "reject_tags": ["keto-recipes", "electric-vehicles", "homeschooling"],
+    "notes": "Bathroom remodel guide — explicit bathroom remodel and tile installation content"
+  },
+  "TC-014": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["raised-bed-gardening", "vegetable-gardening", "organic-gardening", "companion-planting", "composting"],
+    "min_expected": ["raised-bed-gardening", "vegetable-gardening"],
+    "reject_tags": ["oil-changes", "board-games", "baby-gear"],
+    "notes": "Raised bed garden guide — strong gardening signals throughout"
+  },
+  "TC-015": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["farmhouse-style", "interior-design", "living-room-design", "kitchen-design"],
+    "min_expected": ["farmhouse-style", "interior-design"],
+    "reject_tags": ["electric-vehicles", "keto-recipes", "running"],
+    "notes": "Farmhouse interior design — farmhouse style and interior design are explicit"
+  },
+  "TC-016": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["deck-building", "outdoor-living", "diy-projects", "home-improvement"],
+    "min_expected": ["deck-building", "diy-projects"],
+    "reject_tags": ["pasta-recipes", "car-washing", "teen-parenting"],
+    "notes": "DIY deck building guide — deck building is the dominant unambiguous signal"
+  },
+  "TC-017": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["baby-sleep-training", "newborn-care", "bedtime-routines", "infant-development"],
+    "min_expected": ["baby-sleep-training", "bedtime-routines"],
+    "reject_tags": ["electric-vehicles", "sourdough-bread", "tile-installation"],
+    "notes": "Baby sleep article — sleep training and newborn care are clear primary signals"
+  },
+  "TC-018": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["sensory-play", "toddler-development", "preschool-activities", "motor-skills"],
+    "min_expected": ["sensory-play", "toddler-development"],
+    "reject_tags": ["oil-changes", "bread-baking", "lawn-care"],
+    "notes": "Sensory play article — sensory play and toddler development are explicit"
+  },
+  "TC-019": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["tantrums", "positive-discipline", "toddler-parenting", "emotional-development", "behavior-management"],
+    "min_expected": ["tantrums", "positive-discipline"],
+    "reject_tags": ["electric-vehicles", "vegetable-gardening", "album-reviews"],
+    "notes": "Toddler tantrums — tantrums and positive discipline are the explicit primary tags"
+  },
+  "TC-020": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["picky-eaters", "nutrition-tips", "kid-friendly-recipes", "snacks"],
+    "min_expected": ["picky-eaters", "kid-friendly-recipes"],
+    "reject_tags": ["electric-vehicles", "tile-installation", "rock-music"],
+    "notes": "Picky eater snack ideas — explicit picky eaters and nutrition content"
+  },
+  "TC-021": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["baby-led-weaning", "baby-nutrition", "infant-development", "newborn-care"],
+    "min_expected": ["baby-led-weaning", "baby-nutrition"],
+    "reject_tags": ["electric-vehicles", "drywall-repair", "thriller-movies"],
+    "notes": "BLW guide — baby-led weaning is the explicit and unambiguous primary topic"
+  },
+  "TC-022": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["homeschooling", "learning-activities", "stem-education", "early-literacy"],
+    "min_expected": ["homeschooling", "learning-activities"],
+    "reject_tags": ["oil-changes", "bbq-recipes", "mortgage-tips"],
+    "notes": "Homeschooling curriculum guide — homeschooling is the dominant and explicit signal"
+  },
+  "TC-023": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["adhd-strategies", "special-needs-parenting", "homework-help", "behavior-management", "iep-planning"],
+    "min_expected": ["adhd-strategies", "special-needs-parenting"],
+    "reject_tags": ["electric-vehicles", "sourdough-bread", "car-washing"],
+    "notes": "ADHD parenting guide — adhd-strategies and special-needs-parenting are clear"
+  },
+  "TC-024": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["camping-with-kids", "family-bonding", "outdoor-activities", "vacation-planning"],
+    "min_expected": ["camping-with-kids", "family-bonding"],
+    "reject_tags": ["electric-vehicles", "sourdough-bread", "interior-design"],
+    "notes": "Family camping guide — camping-with-kids is the dominant explicit signal"
+  },
+  "TC-025": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["thriller-movies", "streaming-recommendations", "movie-reviews"],
+    "min_expected": ["thriller-movies", "streaming-recommendations"],
+    "reject_tags": ["oil-changes", "baby-gear", "raised-bed-gardening"],
+    "notes": "Thriller movie streaming guide — thriller and streaming are explicitly stated"
+  },
+  "TC-026": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["rock-music", "album-reviews", "music-reviews"],
+    "min_expected": ["rock-music", "album-reviews"],
+    "reject_tags": ["electric-vehicles", "sourdough-bread", "potty-training"],
+    "notes": "Rock album reviews — rock music and album reviews are the explicit signals"
+  },
+  "TC-027": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["mystery-thriller-books", "book-recommendations", "reading-lists", "book-clubs"],
+    "min_expected": ["mystery-thriller-books", "book-recommendations"],
+    "reject_tags": ["electric-vehicles", "lawn-care", "baby-sleep-training"],
+    "notes": "Mystery book recommendations — book content with mystery genre is clear"
+  },
+  "TC-028": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["mobile-gaming", "game-reviews", "puzzle-games"],
+    "min_expected": ["mobile-gaming", "game-reviews"],
+    "reject_tags": ["electric-vehicles", "keto-recipes", "deck-building"],
+    "notes": "Mobile gaming guide — mobile gaming is the explicit primary signal"
+  },
+  "TC-029": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["board-games", "strategy-games", "family-games", "card-games"],
+    "min_expected": ["board-games", "strategy-games"],
+    "reject_tags": ["electric-vehicles", "pasta-recipes", "drywall-repair"],
+    "notes": "Board game guide — board games, strategy, and family games are all explicit"
+  },
+  "TC-030": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["photography", "hobbies", "learning-activities"],
+    "min_expected": ["photography", "hobbies"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "potty-training"],
+    "notes": "Photography hobby guide — photography is the explicit primary signal"
+  },
+  "TC-031": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["running", "workout-routines", "fitness-goals", "cardio-exercises"],
+    "min_expected": ["running", "workout-routines"],
+    "reject_tags": ["electric-vehicles", "sourdough-bread", "drywall-repair"],
+    "notes": "Couch to 5K running guide — running and fitness are the explicit primary signals"
+  },
+  "TC-032": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["budget-travel", "international-travel", "travel-planning", "travel-tips"],
+    "min_expected": ["budget-travel", "international-travel"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "baby-led-weaning"],
+    "notes": "Budget international travel guide — both budget and international travel are explicit"
+  },
+  "TC-033": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["oil-changes", "diy-car-repair", "preventive-maintenance", "car-maintenance"],
+    "min_expected": ["oil-changes", "diy-car-repair"],
+    "reject_tags": ["sourdough-bread", "vegetable-gardening", "baby-gear"],
+    "notes": "DIY oil change — oil changes and DIY car repair are the unambiguous primary signals"
+  },
+  "TC-034": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["brake-service", "warning-lights", "car-maintenance", "troubleshooting"],
+    "min_expected": ["brake-service", "warning-lights"],
+    "reject_tags": ["pasta-recipes", "raised-bed-gardening", "homeschooling"],
+    "notes": "Brake warning signs — brake service and warning lights are explicit and primary"
+  },
+  "TC-035": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["car-washing", "car-care", "car-detailing", "waxing-polishing"],
+    "min_expected": ["car-washing", "car-care"],
+    "reject_tags": ["sourdough-bread", "potty-training", "thriller-movies"],
+    "notes": "Car washing guide — car washing and detailing are the explicit primary signals"
+  },
+  "TC-036": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["used-car-buying", "vehicle-history", "car-shopping", "diagnostic-tools"],
+    "min_expected": ["used-car-buying", "vehicle-history"],
+    "reject_tags": ["keto-recipes", "vegetable-gardening", "baby-led-weaning"],
+    "notes": "Used car buying guide — used car buying and vehicle history are explicit"
+  },
+  "TC-037": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["electric-vehicles", "car-tech-features", "fuel-efficiency", "car-buying", "car-financing"],
+    "min_expected": ["electric-vehicles", "fuel-efficiency"],
+    "reject_tags": ["sourdough-bread", "deck-building", "baby-sleep-training"],
+    "notes": "EV buying guide — electric vehicles is the unambiguous primary signal"
+  },
+  "TC-038": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["new-car-buying", "negotiation-tips", "car-financing", "car-shopping"],
+    "min_expected": ["new-car-buying", "negotiation-tips"],
+    "reject_tags": ["sourdough-bread", "raised-bed-gardening", "thriller-movies"],
+    "notes": "Car negotiation guide — new car buying and negotiation are both explicit"
+  },
+  "TC-039": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["storage-solutions", "decluttering", "organization-hacks", "diy-projects"],
+    "min_expected": [],
+    "reject_tags": ["sourdough-bread", "baby-sleep-training"],
+    "notes": "Ambiguous: garage organization spans home-garden and automotive. Min_expected is empty due to ambiguity"
+  },
+  "TC-040": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["road-trip-planning", "family-bonding", "family-games", "audiobooks"],
+    "min_expected": [],
+    "reject_tags": ["sourdough-bread", "tile-installation", "electric-vehicles"],
+    "notes": "Ambiguous: road trip entertainment spans entertainment and automotive/parenting"
+  },
+  "TC-041": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["grilling-recipes", "chicken-recipes", "dinner-recipes"],
+    "min_expected": ["grilling-recipes", "chicken-recipes"],
+    "reject_tags": ["electric-vehicles", "lawn-care", "teen-parenting"],
+    "notes": "Grilled chicken JSON — explicit grilling and chicken signals in flat structure"
+  },
+  "TC-042": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["vegan-recipes", "soups", "plant-based-cooking", "lentil-recipes"],
+    "min_expected": ["vegan-recipes", "soups"],
+    "reject_tags": ["electric-vehicles", "car-washing", "baby-led-weaning"],
+    "notes": "Vegan lentil soup JSON — vegan and soup signals are explicit"
+  },
+  "TC-043": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["cookie-recipes", "holiday-cooking", "baking", "make-ahead-meals"],
+    "min_expected": ["cookie-recipes", "holiday-cooking"],
+    "reject_tags": ["electric-vehicles", "lawn-care", "adhd-strategies"],
+    "notes": "Holiday cookies JSON — cookie recipes and holiday cooking are explicit"
+  },
+  "TC-044": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["meal-prep", "batch-cooking", "make-ahead-meals", "chicken-recipes", "rice-dishes"],
+    "min_expected": ["meal-prep", "batch-cooking"],
+    "reject_tags": ["electric-vehicles", "deck-building", "homeschooling"],
+    "notes": "Meal prep guide nested JSON — meal prep and batch cooking are the dominant signals"
+  },
+  "TC-045": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["mediterranean-diet", "meal-planning-tips", "salmon-recipes", "vegetarian-recipes"],
+    "min_expected": ["mediterranean-diet", "meal-planning-tips"],
+    "reject_tags": ["electric-vehicles", "drywall-repair", "sensory-play"],
+    "notes": "Mediterranean diet plan — explicit mediterranean diet and meal planning signals"
+  },
+  "TC-046": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["bbq-recipes", "grilling-recipes", "party-food", "smoking-techniques"],
+    "min_expected": ["bbq-recipes", "grilling-recipes"],
+    "reject_tags": ["electric-vehicles", "homeschooling", "thriller-movies"],
+    "notes": "BBQ party JSON — bbq and grilling are unambiguous primary signals"
+  },
+  "TC-047": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["seed-starting", "vegetable-gardening", "garden-planning", "garden-maintenance"],
+    "min_expected": ["seed-starting", "vegetable-gardening"],
+    "reject_tags": ["electric-vehicles", "baby-led-weaning", "album-reviews"],
+    "notes": "Spring planting schedule — gardening signals are explicit and primary"
+  },
+  "TC-048": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["deep-cleaning", "cleaning-tips", "bathroom-design", "natural-cleaning"],
+    "min_expected": ["deep-cleaning", "cleaning-tips"],
+    "reject_tags": ["electric-vehicles", "keto-recipes", "potty-training"],
+    "notes": "Bathroom cleaning checklist — cleaning signals are the explicit primary content"
+  },
+  "TC-049": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["outdoor-furniture", "patio-design", "outdoor-living"],
+    "min_expected": ["outdoor-furniture", "patio-design"],
+    "reject_tags": ["keto-recipes", "oil-changes", "baby-gear"],
+    "notes": "Patio furniture guide — outdoor furniture and patio design are explicit"
+  },
+  "TC-050": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["bathroom-remodel", "home-renovation", "kitchen-remodel", "tile-installation"],
+    "min_expected": ["bathroom-remodel", "home-renovation"],
+    "reject_tags": ["keto-recipes", "oil-changes", "baby-led-weaning"],
+    "notes": "Remodel cost JSON — bathroom remodel and home renovation are explicit primary signals"
+  },
+  "TC-051": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["container-gardening", "herb-gardening", "indoor-gardening", "vegetable-gardening"],
+    "min_expected": ["container-gardening", "herb-gardening"],
+    "reject_tags": ["oil-changes", "keto-recipes", "thriller-movies"],
+    "notes": "Container garden guide — container gardening is the explicit primary topic"
+  },
+  "TC-052": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["energy-efficiency", "hvac-maintenance", "weatherproofing", "insulation"],
+    "min_expected": ["energy-efficiency", "hvac-maintenance"],
+    "reject_tags": ["keto-recipes", "homeschooling", "mobile-gaming"],
+    "notes": "Home energy audit — energy efficiency and HVAC are the explicit primary signals"
+  },
+  "TC-053": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["baby-gear", "newborn-care", "infant-development"],
+    "min_expected": ["baby-gear", "newborn-care"],
+    "reject_tags": ["electric-vehicles", "sourdough-bread", "lawn-care"],
+    "notes": "Baby gear checklist — baby gear and newborn care are the clear primary signals"
+  },
+  "TC-054": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["learning-activities", "preschool-activities", "art-projects", "stem-education"],
+    "min_expected": ["learning-activities", "preschool-activities"],
+    "reject_tags": ["electric-vehicles", "bbq-recipes", "car-washing"],
+    "notes": "After-school activities — learning and preschool activities are the explicit signals"
+  },
+  "TC-055": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["screen-time-limits", "teen-parenting", "behavior-management"],
+    "min_expected": ["screen-time-limits", "teen-parenting"],
+    "reject_tags": ["electric-vehicles", "sourdough-bread", "lawn-care"],
+    "notes": "Teen screen time guide — screen time and teen parenting are the explicit signals"
+  },
+  "TC-056": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["school-readiness", "early-literacy", "cognitive-development", "social-skills"],
+    "min_expected": ["school-readiness", "early-literacy"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "thriller-movies"],
+    "notes": "Kindergarten readiness — school readiness and early literacy are explicit"
+  },
+  "TC-057": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["vacation-planning", "family-travel", "budget-travel", "day-trips"],
+    "min_expected": ["vacation-planning", "family-travel"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "car-washing"],
+    "notes": "Family vacation budget — explicit vacation planning and family travel signals"
+  },
+  "TC-058": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["potty-training", "toddler-development", "behavior-management"],
+    "min_expected": ["potty-training", "toddler-development"],
+    "reject_tags": ["electric-vehicles", "sourdough-bread", "car-modifications"],
+    "notes": "Potty training guide — potty training is the unambiguous primary topic"
+  },
+  "TC-059": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["movie-reviews", "action-movies", "animated-films", "sci-fi-fantasy"],
+    "min_expected": ["movie-reviews", "action-movies"],
+    "reject_tags": ["oil-changes", "baby-led-weaning", "raised-bed-gardening"],
+    "notes": "Summer movie preview — movie reviews and genres are the explicit signals"
+  },
+  "TC-060": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["video-games", "game-reviews", "console-gaming", "pc-gaming", "mobile-gaming"],
+    "min_expected": ["video-games", "game-reviews"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "baby-gear"],
+    "notes": "Video game releases JSON — game reviews and multiple platform signals are explicit"
+  },
+  "TC-061": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["audiobooks", "streaming-recommendations"],
+    "min_expected": ["streaming-recommendations"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "baby-gear"],
+    "notes": "Podcast guide JSON — entertainment/streaming signals present; podcast category may be ambiguous"
+  },
+  "TC-062": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["book-clubs", "book-recommendations", "fiction-books", "reading-lists"],
+    "min_expected": ["book-clubs", "book-recommendations"],
+    "reject_tags": ["oil-changes", "bbq-recipes", "baby-sleep-training"],
+    "notes": "Book club reading list — book clubs and book recommendations are the explicit signals"
+  },
+  "TC-063": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["hiking", "outdoor-activities", "travel-tips", "domestic-travel"],
+    "min_expected": ["hiking", "outdoor-activities"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "potty-training"],
+    "notes": "Hiking trail data — hiking and outdoor activities are the explicit signals"
+  },
+  "TC-064": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["strength-training", "workout-routines", "fitness-goals", "home-workouts"],
+    "min_expected": ["strength-training", "workout-routines"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "baby-led-weaning"],
+    "notes": "Strength training program — strength training and workout signals are explicit"
+  },
+  "TC-065": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["maintenance-schedule", "preventive-maintenance", "oil-changes", "tire-maintenance"],
+    "min_expected": ["maintenance-schedule", "preventive-maintenance"],
+    "reject_tags": ["sourdough-bread", "potty-training", "thriller-movies"],
+    "notes": "Car maintenance schedule — maintenance schedule and preventive maintenance are explicit"
+  },
+  "TC-066": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["electric-vehicles", "road-trip-planning", "eco-driving", "fuel-efficiency"],
+    "min_expected": ["electric-vehicles", "road-trip-planning"],
+    "reject_tags": ["sourdough-bread", "potty-training", "photography"],
+    "notes": "EV charging network comparison — electric vehicles and road trip charging are explicit"
+  },
+  "TC-067": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["used-car-buying", "diagnostic-tools", "troubleshooting", "car-care"],
+    "min_expected": ["used-car-buying", "diagnostic-tools"],
+    "reject_tags": ["sourdough-bread", "baby-led-weaning", "photography"],
+    "notes": "Pre-purchase inspection checklist — used car buying and diagnostic tools are explicit"
+  },
+  "TC-068": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["suv-reviews", "car-shopping", "new-car-buying", "family-vehicles"],
+    "min_expected": ["suv-reviews", "car-shopping"],
+    "reject_tags": ["sourdough-bread", "baby-gear", "knitting"],
+    "notes": "SUV comparison guide — SUV reviews and car shopping are the explicit primary signals"
+  },
+  "TC-069": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["car-seat-safety", "child-safety", "injury-prevention", "baby-gear"],
+    "min_expected": [],
+    "reject_tags": ["sourdough-bread", "thriller-movies", "lawn-care"],
+    "notes": "Ambiguous: car seat safety spans automotive and parenting. Min_expected empty due to cross-vertical nature"
+  },
+  "TC-070": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["audio-systems", "car-modifications", "aftermarket-parts", "infotainment-systems"],
+    "min_expected": [],
+    "reject_tags": ["sourdough-bread", "baby-led-weaning", "raised-bed-gardening"],
+    "notes": "Ambiguous: car audio spans automotive and entertainment. Min_expected empty due to ambiguity"
+  },
+  "TC-071": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["organic-gardening", "seasonal-produce", "dinner-recipes", "vegetable-recipes"],
+    "min_expected": ["seasonal-produce", "organic-gardening"],
+    "reject_tags": ["electric-vehicles", "baby-sleep-training", "album-reviews"],
+    "notes": "Farm to table podcast — seasonal produce and organic gardening are the explicit content themes"
+  },
+  "TC-072": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["keto-recipes", "low-carb-meals", "high-protein-meals", "meal-prep"],
+    "min_expected": ["keto-recipes", "low-carb-meals"],
+    "reject_tags": ["electric-vehicles", "deck-building", "photography"],
+    "notes": "Keto nutrition podcast — keto and low-carb signals are the explicit primary content"
+  },
+  "TC-073": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["bbq-recipes", "southern-cooking", "grilling-recipes", "smoking-techniques"],
+    "min_expected": ["bbq-recipes", "grilling-recipes"],
+    "reject_tags": ["electric-vehicles", "potty-training", "photography"],
+    "notes": "BBQ history podcast — bbq, southern cooking, and grilling are the explicit primary signals"
+  },
+  "TC-074": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["sourdough-bread", "bread-baking", "yeast-baking", "fermentation"],
+    "min_expected": ["sourdough-bread", "bread-baking"],
+    "reject_tags": ["electric-vehicles", "potty-training", "rock-music"],
+    "notes": "Sourdough science podcast — sourdough and bread baking are unambiguous primary signals"
+  },
+  "TC-075": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["small-space-living", "interior-design", "storage-solutions", "minimalist-design"],
+    "min_expected": ["small-space-living", "interior-design"],
+    "reject_tags": ["keto-recipes", "oil-changes", "baby-led-weaning"],
+    "notes": "Interior design podcast — small space living and interior design are explicit primary signals"
+  },
+  "TC-076": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["organic-gardening", "vegetable-gardening", "soil-health", "pest-control", "composting"],
+    "min_expected": ["organic-gardening", "soil-health"],
+    "reject_tags": ["keto-recipes", "oil-changes", "thriller-movies"],
+    "notes": "Master gardener podcast — organic gardening and soil health are the explicit primary signals"
+  },
+  "TC-077": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["kitchen-design", "kitchen-remodel", "home-renovation", "home-improvement"],
+    "min_expected": ["kitchen-design", "home-renovation"],
+    "reject_tags": ["keto-recipes", "oil-changes", "photography"],
+    "notes": "American kitchen history podcast — kitchen design and home renovation are the explicit signals"
+  },
+  "TC-078": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["home-renovation", "diy-projects", "home-improvement", "home-inspection"],
+    "min_expected": ["home-renovation", "home-improvement"],
+    "reject_tags": ["keto-recipes", "electric-vehicles", "baby-led-weaning"],
+    "notes": "Contractor hiring guide podcast — home renovation and improvement are the explicit signals"
+  },
+  "TC-079": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["emotional-development", "positive-discipline", "behavior-management", "parenting-stress"],
+    "min_expected": ["positive-discipline", "emotional-development"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "car-washing"],
+    "notes": "Resilient children podcast — positive discipline and emotional development are the primary signals"
+  },
+  "TC-080": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["mental-health", "teen-parenting", "parenting-stress", "screen-time-limits"],
+    "min_expected": ["mental-health", "teen-parenting"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "lawn-care"],
+    "notes": "Teen mental health podcast — mental health and teen parenting are the explicit primary signals"
+  },
+  "TC-081": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["parenting-stages", "infant-development", "postpartum", "child-safety"],
+    "min_expected": ["parenting-stages"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "car-modifications"],
+    "notes": "History of parenting advice podcast — parenting stages is the clearest signal; content spans time periods"
+  },
+  "TC-082": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["screen-time-limits", "teen-parenting", "social-skills", "emotional-development"],
+    "min_expected": ["screen-time-limits", "teen-parenting"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "car-modifications"],
+    "notes": "Digital age parenting podcast — screen time and teen parenting are the explicit primary signals"
+  },
+  "TC-083": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["documentary-reviews", "movie-reviews", "classic-films"],
+    "min_expected": ["documentary-reviews", "movie-reviews"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "baby-led-weaning"],
+    "notes": "Documentary filmmaker interview — documentary reviews and movie content are explicit"
+  },
+  "TC-084": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["indie-games", "video-games", "game-reviews"],
+    "min_expected": ["indie-games", "game-reviews"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "potty-training"],
+    "notes": "Indie game developer podcast — indie games and game reviews are the explicit signals"
+  },
+  "TC-085": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["tv-show-reviews", "drama-series", "binge-worthy-shows", "streaming-recommendations"],
+    "min_expected": ["tv-show-reviews", "drama-series"],
+    "reject_tags": ["oil-changes", "bbq-recipes", "potty-training"],
+    "notes": "Peak TV history podcast — TV show reviews and drama series are the explicit signals"
+  },
+  "TC-086": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["rock-music", "music-reviews", "concert-reviews", "album-reviews"],
+    "min_expected": ["rock-music", "music-reviews"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "potty-training"],
+    "notes": "Rock music revival podcast — rock music and music reviews are the explicit primary signals"
+  },
+  "TC-087": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["electric-vehicles", "automotive-tech", "car-tech-features", "fuel-efficiency"],
+    "min_expected": ["electric-vehicles", "automotive-tech"],
+    "reject_tags": ["sourdough-bread", "potty-training", "photography"],
+    "notes": "EV battery engineer podcast — electric vehicles and automotive tech are the explicit signals"
+  },
+  "TC-088": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["used-car-buying", "negotiation-tips", "car-shopping", "warranty-options"],
+    "min_expected": ["used-car-buying", "negotiation-tips"],
+    "reject_tags": ["sourdough-bread", "potty-training", "photography"],
+    "notes": "Used car buying expert podcast — used car buying and negotiation are the explicit primary signals"
+  },
+  "TC-089": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["sports-car-reviews", "car-modifications", "performance-upgrades", "driving-tips"],
+    "min_expected": [],
+    "reject_tags": ["sourdough-bread", "potty-training", "raised-bed-gardening"],
+    "notes": "Ambiguous: motorsport podcast spans automotive and entertainment. Min_expected empty due to cross-vertical nature"
+  },
+  "TC-090": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["road-trip-planning", "driving-tips", "domestic-travel", "fuel-efficiency"],
+    "min_expected": [],
+    "reject_tags": ["sourdough-bread", "potty-training", "raised-bed-gardening"],
+    "notes": "Ambiguous: road trip stories span automotive and entertainment/travel. Min_expected empty"
+  },
+  "TC-091": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["air-fryer-cooking", "chicken-recipes", "quick-meals", "dinner-recipes"],
+    "min_expected": ["air-fryer-cooking", "chicken-recipes"],
+    "reject_tags": ["electric-vehicles", "potty-training", "lawn-care"],
+    "notes": "Air fryer chicken video — placeholder metadata. Gemini mock will return food-related tags"
+  },
+  "TC-092": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["sourdough-bread", "bread-baking", "yeast-baking"],
+    "min_expected": ["sourdough-bread", "bread-baking"],
+    "reject_tags": ["electric-vehicles", "potty-training", "lawn-care"],
+    "notes": "Sourdough tutorial video — placeholder metadata. Title signals are clear"
+  },
+  "TC-093": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["tile-installation", "bathroom-remodel", "diy-projects", "home-renovation"],
+    "min_expected": ["tile-installation", "bathroom-remodel"],
+    "reject_tags": ["keto-recipes", "potty-training", "album-reviews"],
+    "notes": "Tile installation DIY video — bathroom remodel and tile are the primary signals"
+  },
+  "TC-094": {
+    "expected_vertical": "parenting-family",
+    "expected_tags": ["kid-friendly-recipes", "nutrition-tips", "toddler-parenting", "picky-eaters"],
+    "min_expected": [],
+    "reject_tags": ["electric-vehicles", "tile-installation", "rock-music"],
+    "notes": "Ambiguous: cooking for toddlers spans parenting and food. Min_expected empty"
+  },
+  "TC-095": {
+    "expected_vertical": "entertainment",
+    "expected_tags": ["yoga", "workout-routines", "home-workouts", "fitness-goals"],
+    "min_expected": ["yoga", "home-workouts"],
+    "reject_tags": ["oil-changes", "sourdough-bread", "baby-led-weaning"],
+    "notes": "Yoga tutorial video — yoga and home workouts are the explicit primary signals"
+  },
+  "TC-096": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["brake-service", "diy-car-repair", "car-maintenance", "preventive-maintenance"],
+    "min_expected": ["brake-service", "diy-car-repair"],
+    "reject_tags": ["sourdough-bread", "baby-led-weaning", "thriller-movies"],
+    "notes": "Brake pad tutorial video — brake service and DIY car repair are the explicit signals"
+  },
+  "TC-097": {
+    "expected_vertical": "automotive",
+    "expected_tags": ["car-detailing", "interior-cleaning", "waxing-polishing", "car-washing"],
+    "min_expected": [],
+    "reject_tags": ["sourdough-bread", "potty-training"],
+    "notes": "Ambiguous: car detailing video spans automotive care and lifestyle content. Min_expected empty"
+  },
+  "TC-098": {
+    "expected_vertical": "home-garden",
+    "expected_tags": ["vegetable-gardening", "garden-maintenance"],
+    "min_expected": [],
+    "reject_tags": ["electric-vehicles", "sourdough-bread", "potty-training"],
+    "notes": "Edge case: 60-second garden video — very short, minimal metadata, low confidence expected"
+  },
+  "TC-099": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": [],
+    "min_expected": [],
+    "reject_tags": ["electric-vehicles", "potty-training", "lawn-care"],
+    "notes": "Edge case: empty body article. System should handle gracefully without hallucinating tags"
+  },
+  "TC-100": {
+    "expected_vertical": "food-cooking",
+    "expected_tags": ["vegetarian-recipes", "meal-prep", "mediterranean-diet", "condiments"],
+    "min_expected": [],
+    "reject_tags": ["electric-vehicles", "potty-training", "tile-installation"],
+    "notes": "Edge case: Unicode content. System should parse correctly and return food-related tags despite special chars"
+  }
+}

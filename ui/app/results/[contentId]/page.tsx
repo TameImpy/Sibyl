@@ -8,7 +8,8 @@ import RoutingBadge from '@/components/RoutingBadge';
 import CostSummary from '@/components/CostSummary';
 
 const POLL_INTERVAL_MS = 2000;
-const POLL_TIMEOUT_MS = 30000;
+const TEXT_POLL_TIMEOUT_MS = 60_000;   // 1 min for articles/podcasts/JSON
+const VIDEO_POLL_TIMEOUT_MS = 300_000; // 5 min for video
 
 interface TagResult {
   tag: string;
@@ -50,6 +51,8 @@ export default function ResultsPage({ params }: { params: { contentId: string } 
   const searchParams = useSearchParams();
   const contentType = searchParams.get('contentType') ?? '';
 
+  const pollTimeoutMs = contentType === 'video' ? VIDEO_POLL_TIMEOUT_MS : TEXT_POLL_TIMEOUT_MS;
+
   const [result, setResult] = useState<ProcessingResult | null>(null);
   const [status, setStatus] = useState<'polling' | 'timeout' | 'error'>('polling');
   const [submitTime] = useState(Date.now());
@@ -80,7 +83,7 @@ export default function ResultsPage({ params }: { params: { contentId: string } 
     let stopped = false;
     const timeoutId = setTimeout(() => {
       if (!stopped) setStatus('timeout');
-    }, POLL_TIMEOUT_MS);
+    }, pollTimeoutMs);
 
     async function poll() {
       const done = await fetchResult();
@@ -88,7 +91,7 @@ export default function ResultsPage({ params }: { params: { contentId: string } 
         clearTimeout(timeoutId);
         return;
       }
-      if (Date.now() - submitTime >= POLL_TIMEOUT_MS) {
+      if (Date.now() - submitTime >= pollTimeoutMs) {
         setStatus('timeout');
         clearTimeout(timeoutId);
         return;
@@ -142,7 +145,11 @@ export default function ResultsPage({ params }: { params: { contentId: string } 
           <div className="text-center">
             <p className="font-semibold text-gray-800">Processing your content</p>
             <p className="text-sm text-gray-500 mt-1">SQS → Lambda → AI model → DynamoDB</p>
-            <p className="text-xs text-gray-400 mt-1">Polling every 2s (mock mode ~2–5s)</p>
+            <p className="text-xs text-gray-400 mt-1">
+              {contentType === 'video'
+                ? 'Video analysis via Gemini — typically 2–5 minutes'
+                : 'Polling every 2s — typically completes in ~5s'}
+            </p>
           </div>
           <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
             <div className="bg-[#4a9ed6] h-full rounded-full animate-pulse" style={{ width: '60%' }} />

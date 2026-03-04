@@ -1,0 +1,910 @@
+[
+  {
+    "id": "TC-001",
+    "content_type": "article",
+    "title": "5-Minute Air Fryer Chicken Wings",
+    "content_text": "Crispy air fryer chicken wings ready in minutes. Toss wings with garlic powder, paprika, and salt. Air fry at 400°F for 20 minutes, flipping halfway. Serve with your favorite dipping sauce. Perfect for game day snacks or a quick weeknight dinner.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-002",
+    "content_type": "article",
+    "title": "Quick Weeknight Pasta Primavera",
+    "content_text": "Get dinner on the table in 30 minutes with this easy pasta primavera. Boil your favorite pasta, sauté seasonal vegetables in olive oil, toss together with parmesan. Simple, satisfying, and endlessly adaptable based on what's in your fridge.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-003",
+    "content_type": "article",
+    "title": "Chicken",
+    "content_text": "Chicken recipes.",
+    "expected_vertical": "food-cooking",
+    "test_category": "edge-case",
+    "sub_category": "very-short"
+  },
+  {
+    "id": "TC-004",
+    "content_type": "article",
+    "title": "International Cuisine: Ñoño Crème Brûlée & Über-Healthy Bowls 🌿",
+    "content_text": "Explore world cuisines with a French-inspired crème brûlée using local ingredients. Also featuring über-healthy grain bowls with quinoa, avocado, and açaí. Cuisines from España, Ünited Kingdom, and beyond. Vegetarian-friendly and full of nutrients. 素食主义 means plant-based in Chinese cuisine traditions.",
+    "expected_vertical": "food-cooking",
+    "test_category": "edge-case",
+    "sub_category": "unicode"
+  },
+  {
+    "id": "TC-005",
+    "content_type": "article",
+    "title": "The Complete Guide to Slow Cooker Pot Roast",
+    "content_text": "Slow cooker pot roast is the ultimate set-it-and-forget-it meal. Start by searing a 3-pound chuck roast in a hot skillet until browned on all sides — this step develops deep flavor. Transfer to the slow cooker with carrots, potatoes, onions, garlic, beef broth, tomato paste, and fresh thyme. Cook on low for 8 hours or high for 5 hours. The result is fork-tender beef that falls apart beautifully. This recipe is ideal for meal prep: the leftovers taste even better the next day. Freeze individual portions for easy weeknight dinners throughout the month. Serve with crusty bread to soak up the rich gravy.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-006",
+    "content_type": "article",
+    "title": "Ultimate Guide to Keto Meal Planning for Beginners",
+    "content_text": "Starting a ketogenic diet can feel overwhelming, but with the right meal plan it becomes second nature. The keto diet limits carbohydrates to under 20g net carbs per day, pushing your body into fat-burning ketosis. Begin with a two-week meal plan focused on eggs, fatty fish, grass-fed beef, avocados, nuts, and low-carb vegetables like spinach and broccoli. Track macros using an app: aim for 70% fat, 25% protein, 5% carbs. Meal prep on Sundays to stay on track during busy weekdays. Batch-cook cauliflower rice, hard-boil eggs, and pre-portion snack bags of almonds and cheese. Common keto mistakes include hidden carbs in sauces and dressings — always read labels. Electrolyte imbalance (keto flu) can be prevented with sodium, magnesium, and potassium supplements.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-007",
+    "content_type": "article",
+    "title": "Traditional Italian Sourdough: Baking Authentic Pane di Casa",
+    "content_text": "Italian home bread, or pane di casa, has roots going back centuries. Unlike commercial sourdough, this traditional recipe relies on a natural leavening culture (lievito madre) maintained at room temperature. Begin the levain refresh 12 hours before baking. Combine 300g bread flour, 200g whole wheat flour, 350ml water, 150g active starter, and 12g sea salt. Autolyse the flour and water for 30 minutes before incorporating the starter. Perform stretch-and-fold every 30 minutes during the 4-hour bulk ferment. Shape into a tight boule and cold-proof overnight in the refrigerator. Score deeply before baking in a preheated Dutch oven at 500°F for 20 minutes covered, then 25 minutes uncovered. The result is a chewy, tangy crumb with a crackling crust.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-008",
+    "content_type": "article",
+    "title": "Homemade Indian Butter Chicken: A Complete Guide",
+    "content_text": "Butter chicken, or murgh makhani, is one of India's most beloved exports. Begin with a marinade of yogurt, lemon juice, garam masala, turmeric, and kashmiri chili. Marinate bone-in chicken thighs for at least 4 hours, then grill or broil until charred. The makhani sauce starts with whole spices bloomed in ghee: cardamom, cloves, cinnamon, bay leaves. Add onions, ginger-garlic paste, canned tomatoes, cashews, and simmer 30 minutes. Blend smooth, strain, add cream and butter. Combine the chicken with the sauce and simmer 15 minutes. Garnish with cream and cilantro. Serve with basmati rice and garlic naan. The spice blend is the key — use freshly ground spices whenever possible for maximum flavor.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-009",
+    "content_type": "article",
+    "title": "How to Patch Drywall in 5 Steps",
+    "content_text": "Fixing small drywall holes is easier than you think. Cut a square patch from scrap drywall, apply mesh tape over the seam, spread joint compound in thin layers, let dry 24 hours between coats, sand smooth, and prime before painting. Professional results without hiring a contractor.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-010",
+    "content_type": "article",
+    "title": "Summer Lawn Care: Beat the Heat",
+    "content_text": "Keep your lawn green all summer by watering deeply twice a week rather than daily shallow watering. Raise mower height to 3.5 inches to shade soil and prevent moisture loss. Apply slow-release nitrogen fertilizer in early summer. Watch for grubs and treat with nematodes for an organic solution.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-011",
+    "content_type": "article",
+    "title": "Declutter Your Pantry in One Afternoon",
+    "content_text": "A cluttered pantry wastes time and food. Pull everything out, discard expired items, group by category (baking, canned goods, snacks), then invest in clear containers and lazy Susans. Label everything and establish a first-in-first-out system. A well-organized pantry saves money and reduces decision fatigue at dinner time.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-012",
+    "content_type": "article",
+    "title": "Fix a Dripping Faucet Without Calling a Plumber",
+    "content_text": "A dripping faucet wastes thousands of gallons per year. Turn off the water supply valve, remove the handle screw, replace the worn O-ring or cartridge, reassemble. For compression faucets, replace the seat washer. Total cost: under $10 in parts. Saves a costly plumber visit and reduces your water bill immediately.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-013",
+    "content_type": "article",
+    "title": "Complete Bathroom Remodel on a $5,000 Budget",
+    "content_text": "A full bathroom remodel doesn't have to cost $30,000. By doing the demo yourself and hiring a plumber only for rough-in work, you can save 40% on labor. Prioritize: new tile for the shower surround (use 3x6 subway tile for timeless appeal), a vessel sink with updated faucet, and fresh paint. Install cement backer board behind all wet areas before tiling. Choose a floating vanity to make small bathrooms look larger. For the floor, 12x12 matte porcelain is durable and affordable. Grout with an epoxy grout for stain resistance. Add a dimmer switch and updated light fixture for a dramatic improvement. Order 15% extra tile to account for cuts and breakage. The project takes two weekends for an experienced DIYer.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-014",
+    "content_type": "article",
+    "title": "Building a Raised Bed Vegetable Garden from Scratch",
+    "content_text": "Raised bed gardening is the ideal solution for poor native soil, limited space, or gardeners with mobility challenges. Choose untreated cedar or redwood for the frame — both naturally resist rot. Standard dimensions: 4 feet wide (reachable from both sides without stepping in), 8 feet long, 12 inches deep. Fill with a blend of 60% topsoil, 30% compost, and 10% perlite for drainage. In spring, start with cool-season crops: lettuce, spinach, peas, broccoli. Follow with warm-season crops after last frost: tomatoes, peppers, squash, beans. Amend the soil each season with 3 inches of compost. Companion planting — tomatoes with basil, carrots with onions — naturally deters pests. Install drip irrigation for efficient watering. A 4x8 raised bed can produce $600 worth of vegetables annually.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-015",
+    "content_type": "article",
+    "title": "Modern Farmhouse Interior Design: From Rustic to Refined",
+    "content_text": "The modern farmhouse aesthetic blends rural warmth with clean contemporary lines. The foundation is white shiplap or painted white walls paired with warm wood tones in flooring and furniture. Key pieces: a farmhouse dining table in reclaimed oak, industrial metal light fixtures with Edison bulbs, linen upholstery in muted tones, and vintage-inspired accessories like mason jars and galvanized metal. For the living room, anchor the space with a natural fiber rug like jute or sisal. Introduce texture through knitted throw blankets and distressed leather. Keep the color palette neutral: white, cream, warm gray, and natural wood. In the kitchen, open shelving with white dishes and woven baskets reinforces the aesthetic. Subway tile backsplash, farmhouse sink, and bin-pull hardware complete the look.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-016",
+    "content_type": "article",
+    "title": "DIY Backyard Deck: Complete Build Guide",
+    "content_text": "Building your own deck adds significant value to your home. Start with a design: sketch dimensions, identify ledger board attachment point to the house, and calculate beam and joist spans. Pull a building permit — required in most jurisdictions and ensures safe construction. Use pressure-treated lumber for all structural elements in contact with or near the ground. Space decking boards 1/8 inch apart for drainage. Use hidden fasteners for a clean deck surface without visible screws. Pre-drill near board ends to prevent splitting. Apply a penetrating deck sealer within 30 days of completion. A 400-square-foot deck typically takes two experienced DIYers one weekend for framing and a second weekend for decking and railings.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-017",
+    "content_type": "article",
+    "title": "5 Proven Techniques to Help Baby Sleep Through the Night",
+    "content_text": "Most babies can sleep through the night by 4-6 months. Establish a consistent bedtime routine: bath, feed, lullaby, bed at the same time nightly. Put baby down drowsy but awake so they learn to self-soothe. Use a white noise machine to mask household sounds. The Ferber method — graduated check-ins at increasing intervals — is effective and evidence-based for babies over 5 months.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-018",
+    "content_type": "article",
+    "title": "Sensory Play Ideas for Toddlers Ages 1-3",
+    "content_text": "Sensory play builds neural connections critical for development. Set up a sensory bin with dried pasta, rice, or kinetic sand. Fill a water table for outdoor sensory exploration. Finger painting with edible puree paint is safe for very young toddlers. Playdough made from flour, salt, and cream of tartar develops fine motor skills and can be scented with essential oils.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-019",
+    "content_type": "article",
+    "title": "Handling Toddler Tantrums: What Really Works",
+    "content_text": "Tantrums peak between ages 18 months and 3 years as children develop emotional awareness without the language to express it. Stay calm yourself — your nervous system regulates theirs. Acknowledge the feeling without giving in: 'I see you're angry.' Offer limited choices to restore their sense of control. After the storm passes, reconnect with a hug. Avoid giving in to tantrum demands, which reinforces the behavior.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-020",
+    "content_type": "article",
+    "title": "Healthy Snacks for Picky Eaters: 15 Ideas",
+    "content_text": "Picky eaters challenge every parent. Serve familiar foods alongside new ones without pressure. Pair new vegetables with beloved dips like hummus or ranch. Apple slices with almond butter, cheese and whole-grain crackers, and smoothie pouches deliver nutrition even for selective eaters. Involve kids in food preparation — they're more likely to eat what they've helped make.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-021",
+    "content_type": "article",
+    "title": "Baby-Led Weaning: The Complete Starter Guide",
+    "content_text": "Baby-led weaning (BLW) allows infants to feed themselves solid foods from the start, skipping purees entirely. Begin around 6 months when baby shows readiness: sits unassisted, has lost the tongue-thrust reflex, and shows interest in food. First foods should be soft and finger-shaped — banana slices, avocado strips, well-cooked sweet potato sticks, scrambled eggs. Expect mess: it's part of learning. Gagging is normal and different from choking — trust the process. Avoid honey, whole grapes, whole nuts, and excessive salt for infants under 12 months. BLW supports development of fine motor pincer grip, promotes self-regulation of appetite, and eases the transition to family foods. Maintain breast or formula feeds as primary nutrition through the first year.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-022",
+    "content_type": "article",
+    "title": "Building a Homeschool Curriculum for Elementary School Kids",
+    "content_text": "Homeschooling 650,000 American families and growing, this educational approach offers flexibility no traditional school can match. Begin with your state's legal requirements — most require annual notification and standardized testing. Choose a curriculum approach: classical (great books, Socratic discussion), Charlotte Mason (nature study, living books), eclectic (mix of methods), or unschooling (child-led learning). Core subjects: language arts, mathematics, science, history. Supplement with educational documentaries, museum visits, nature journals, and hands-on science experiments. Average homeschool day is 3-4 hours of structured learning, leaving time for self-directed projects, read-alouds, and outdoor play. Co-ops provide group classes, labs, and social interaction with peers.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-023",
+    "content_type": "article",
+    "title": "Supporting Your Child with ADHD at School and Home",
+    "content_text": "Attention deficit hyperactivity disorder affects approximately 11% of school-age children. Work with the school to establish an IEP or 504 plan providing accommodations: extended test time, preferential seating, movement breaks, and modified assignments. At home, create structure through visual schedules, homework timers, and designated work spaces away from screens. Break tasks into small chunks with built-in reward milestones. Exercise before homework dramatically improves focus — even 20 minutes of running helps. Medication, when recommended by a pediatrician or psychiatrist, works best in combination with behavioral strategies. Family therapy supports parents in developing consistent, evidence-based discipline techniques. Connect with the CHADD (Children and Adults with ADHD) organization for resources and local support groups.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-024",
+    "content_type": "article",
+    "title": "Planning the Perfect Family Camping Trip with Young Kids",
+    "content_text": "Camping with children under 10 requires more planning but rewards you with lifelong memories. Choose a campground with flush toilets and hot showers for first-time family campers — ease into primitive camping gradually. Book sites at least 3 months ahead for peak summer weekends. Gear essentials: a family tent with a vestibule for gear storage, sleeping bags rated for the expected temperatures, and a portable camp stove. Plan activities: nature scavenger hunts, fire-building demonstrations, stargazing, and s'mores-making. Pack familiar comfort foods alongside camp staples. Bring extra changes of clothes — kids get dirty fast outdoors. Download your maps and campground info offline before losing cell service. The unplugged connection with nature and with each other is irreplaceable.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-025",
+    "content_type": "article",
+    "title": "Top 5 Thriller Movies Streaming Right Now",
+    "content_text": "This month's best thrillers span from psychological cat-and-mouse games to high-stakes action. Our picks keep you on the edge of your seat from opening scene to climax. Check your streaming service for availability. Rated by suspense level, originality, and re-watchability.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-026",
+    "content_type": "article",
+    "title": "Best New Rock Albums: What to Listen to This Month",
+    "content_text": "The rock revival continues with a wave of exceptional new releases. From arena-ready anthems to intimate indie guitar work, this month's albums span the full spectrum. We review production quality, songwriting, and live performance potential for each release.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-027",
+    "content_type": "article",
+    "title": "10 Must-Read Mystery Books for Your Summer Reading List",
+    "content_text": "Curl up with a great mystery this summer. Our curated list spans cozy cottage mysteries, Nordic noir, psychological thrillers, and classic whodunits. Each selection features compelling detective work, unexpected plot twists, and memorable protagonists. Perfect for book clubs or solo beach reading.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-028",
+    "content_type": "article",
+    "title": "Best Mobile Games for Your Daily Commute",
+    "content_text": "Short on time but big on fun? These mobile games are designed for 5-15 minute sessions — perfect for bus or train commutes. We've tested dozens to find games that respect your time without endless ads or aggressive monetization. Covering puzzle, strategy, and casual categories.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-029",
+    "content_type": "article",
+    "title": "The Ultimate Guide to Board Games for Every Type of Player",
+    "content_text": "Board gaming has exploded into a $13 billion hobby with thousands of titles spanning every genre and complexity level. For families with young children, gateway games like Ticket to Ride or Pandemic teach cooperation and strategic thinking without overwhelming rulebooks. Strategy gamers graduate to Wingspan, Terraforming Mars, or Concordia. Party games — Codenames, Jackbox, Wavelength — shine with large groups. Deck-builders like Dominion teach engine-building fundamentals. For couples, Patchwork and 7 Wonders Duel offer deep two-player experiences. Local game stores host weekly game nights and can provide hands-on demos before purchase. Board Game Geek (BGG) is the essential community resource with rankings, rules forums, and reviews.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-030",
+    "content_type": "article",
+    "title": "Getting Started with Photography on a Beginner's Budget",
+    "content_text": "You don't need expensive equipment to make compelling photographs. Start with your smartphone — modern camera phones shoot images that would have amazed professionals a decade ago. Learn the basics first: the exposure triangle (aperture, shutter speed, ISO), composition rules (rule of thirds, leading lines, framing), and light quality (golden hour, open shade). When ready to upgrade, a used mirrorless camera from Sony or Fujifilm with a 35mm f/1.8 prime lens covers most situations beautifully. Join a local photography club or online community for feedback and inspiration. Take a free course on platforms like Coursera or YouTube. Practice every day, even with just your phone — consistency builds the eye for great images faster than any gear upgrade.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-031",
+    "content_type": "article",
+    "title": "From Couch to 5K: A Beginner's Complete Running Guide",
+    "content_text": "Running is the most accessible form of fitness — requiring only a decent pair of shoes and willingness to start. The Couch to 5K (C25K) program uses run-walk intervals over 9 weeks to safely build aerobic capacity. Week one: run 1 minute, walk 90 seconds, repeat for 20 minutes, three days per week. Proper running form: slight forward lean from ankles, arms relaxed, landing under your center of gravity. Invest in proper footwear from a specialty running store where staff can analyze your gait. Common beginner mistakes: going too fast, skipping rest days, and ignoring pain versus discomfort. Track progress with a running app. Set a goal race to stay motivated — a local 5K gives structure and a finish-line moment.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-032",
+    "content_type": "article",
+    "title": "How to Plan a Budget International Trip Without Sacrificing Experiences",
+    "content_text": "International travel is more accessible than ever with budget airlines, home-sharing platforms, and flexible booking tools. Use Google Flights' 'Explore' mode to find the cheapest destinations from your home airport on your dates. Book 2-3 months ahead for transatlantic routes. Choose destinations with favorable exchange rates: Southeast Asia, Eastern Europe, and Mexico stretch dollars furthest. Accommodation: mix hostels (for social connection), Airbnbs (for kitchen access to reduce food costs), and one splurge hotel night. Eat where locals eat — street food and market meals cut costs dramatically. Use a no-foreign-transaction-fee credit card and notify your bank before departure. Pack light to avoid checked bag fees. Research free museum days, city passes, and public transit options before arrival.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-033",
+    "content_type": "article",
+    "title": "How to Change Your Car's Oil: Step-by-Step DIY Guide",
+    "content_text": "Oil changes are the most important routine maintenance task and saving $50+ by doing it yourself is satisfying. Gather: correct oil (check owner's manual), new oil filter, drain pan, socket set, and oil filter wrench. Warm the engine 2 minutes, drain old oil via drain plug, replace drain plug with new washer, swap filter, fill with new oil, check for leaks. Dispose of used oil at any auto parts store.",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-034",
+    "content_type": "article",
+    "title": "7 Warning Signs Your Brakes Need Immediate Service",
+    "content_text": "Don't ignore brake warning signs. Squealing or grinding noises indicate worn pads. A pulsating pedal points to warped rotors. A soft or spongy pedal may signal air in brake lines or failing master cylinder. Pulling to one side during braking suggests uneven pad wear or a stuck caliper. The brake warning light on your dashboard demands immediate attention. Vibration through the steering wheel during braking warrants inspection. Any brake issue is a safety priority.",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-035",
+    "content_type": "article",
+    "title": "How to Wash Your Car Like a Pro at Home",
+    "content_text": "Washing your car correctly prevents swirl marks and protects the paint. Use the two-bucket method: one for soapy water, one for rinsing the mitt. Start with a pre-rinse to remove loose dirt. Wash from top to bottom in straight lines, never circles. Dry with microfiber towels using a blotting motion. Apply a spray wax for quick paint protection. Clean wheels last with a dedicated wheel cleaner.",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-036",
+    "content_type": "article",
+    "title": "What to Check When Buying a Used Car",
+    "content_text": "A used car purchase can save thousands but requires due diligence. Run a vehicle history report (Carfax or AutoCheck) to check for accidents, title issues, and odometer fraud. Have a trusted mechanic perform a pre-purchase inspection for $100-150. Check for rust on frame rails and wheel wells. Test all electronics, HVAC, and power features. Look for oil leaks under the hood and mismatched panel gaps indicating accident repairs.",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "short"
+  },
+  {
+    "id": "TC-037",
+    "content_type": "article",
+    "title": "Complete Guide to Buying an Electric Vehicle in 2026",
+    "content_text": "The electric vehicle market has matured dramatically with 200+ models now available across all price points. Range anxiety is largely resolved: most 2026 EVs offer 250-400 mile ranges on a single charge. Key considerations when buying: charging infrastructure at home (Level 2 home charger installation costs $500-1,500) and along your common routes, charging speed (DC fast charging rates matter for road trips), cargo space, and total cost of ownership including electricity vs. gas savings. The federal EV tax credit (up to $7,500) applies to vehicles assembled in North America under MSRP thresholds. Lease vs. buy analysis: leasing often passes the tax credit to the lessor, reducing monthly payments. Research charging networks: Tesla Supercharger, Electrify America, ChargePoint — compatibility varies by vehicle.",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-038",
+    "content_type": "article",
+    "title": "Negotiating the Best New Car Deal: Insider Strategies",
+    "content_text": "Car dealers are professional negotiators — you can level the playing field with preparation. Research the invoice price (what the dealer paid) using Edmunds or TrueCar. Get quotes from at least 3 dealers via email before stepping foot in a showroom. Negotiate the out-of-door price, not just the monthly payment — monthly payment negotiation obscures the true cost. End-of-month and end-of-quarter visits give dealers incentive to close deals. Consider financing through your credit union before accepting dealer financing — dealers mark up interest rates for profit. Decline unnecessary add-ons: extended warranties from dealers are overpriced versus third-party options. If the deal feels rushed, walk away — another buyer is rarely waiting for that exact car.",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-039",
+    "content_type": "article",
+    "title": "How to Organize Your Garage for Maximum Storage",
+    "content_text": "A disorganized garage is one of the most common household frustrations. Begin with a complete declutter: donate, trash, or sell anything unused in the past year. Zone the space: automotive tools near the car, lawn equipment by the garage door, sports gear on one wall, seasonal storage overhead. Install a pegboard for hand tools with outline silhouettes so everything returns to its spot. Heavy-duty wall-mounted shelving handles bins and toolboxes. Use ceiling-mounted pulley systems for bikes and kayaks. Label every bin clearly. Epoxy coat the floor for easy cleaning and a finished look. Store hazardous materials — gasoline, oils, paints — in a ventilated metal cabinet away from ignition sources.",
+    "expected_vertical": "home-garden",
+    "test_category": "ambiguous",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-040",
+    "content_type": "article",
+    "title": "Best Road Trip Entertainment for the Whole Family",
+    "content_text": "Long drives with kids require planning. Download offline playlists, podcasts, and audiobooks before losing cell service. Road trip bingo cards and license plate games engage younger children. For tweens and teens, collaborative travel journals or audio drama series keep everyone entertained without screens. Pack a road trip box with small surprises revealed every two hours — novelty maintains engagement. Plan strategic stops at interesting roadside attractions rather than just rest stops. Bring snacks everyone loves and create a family road trip playlist together before departure.",
+    "expected_vertical": "entertainment",
+    "test_category": "ambiguous",
+    "sub_category": "long"
+  },
+  {
+    "id": "TC-041",
+    "content_type": "json",
+    "title": "Grilled Chicken Thigh Recipe Card",
+    "content_text": "{\"title\": \"Juicy Grilled Chicken Thighs\", \"cook_time\": \"25 minutes\", \"servings\": 4, \"method\": \"Marinate chicken thighs in lemon juice, garlic, olive oil, and herbs for 2 hours. Grill over medium-high heat 6-7 minutes per side until internal temp reaches 165°F. Rest 5 minutes before serving.\", \"tags\": [\"grilling\", \"chicken\", \"dinner\"]}",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-042",
+    "content_type": "json",
+    "title": "Vegan Lentil Soup Recipe",
+    "content_text": "{\"recipe_name\": \"Red Lentil Soup\", \"dietary\": \"vegan\", \"prep_minutes\": 10, \"cook_minutes\": 30, \"description\": \"Hearty red lentil soup with coconut milk, turmeric, ginger, and spinach. Fully plant-based and packed with protein and fiber. Serve with crusty bread.\"}",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-043",
+    "content_type": "json",
+    "title": "Holiday Cookie Recipes Collection",
+    "content_text": "{\"collection\": \"Holiday Cookies 2026\", \"count\": 12, \"types\": [\"sugar cookies\", \"snickerdoodles\", \"gingerbread\", \"peppermint bark\"], \"summary\": \"Classic holiday cookie recipes perfect for baking with family. Each recipe includes make-ahead tips and storage instructions for the holiday season.\"}",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-044",
+    "content_type": "json",
+    "title": "Weekly Meal Prep Sunday Guide",
+    "content_text": "{\"title\": \"Sunday Meal Prep Guide\", \"overview\": \"Prepare a week of lunches and dinners in 2 hours\", \"components\": {\"proteins\": [\"baked chicken breasts\", \"hard-boiled eggs\", \"cooked ground turkey\"], \"grains\": [\"cooked brown rice\", \"quinoa\"], \"vegetables\": [\"roasted broccoli\", \"sliced peppers\", \"spiralized zucchini\"]}, \"assembly_tip\": \"Mix and match components into bowls throughout the week. Keeps fresh 4-5 days refrigerated.\"}",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-045",
+    "content_type": "json",
+    "title": "Mediterranean Diet 7-Day Meal Plan",
+    "content_text": "{\"plan_name\": \"Mediterranean Diet 7-Day\", \"principles\": [\"olive oil as primary fat\", \"fish twice weekly\", \"legumes 3x weekly\", \"limit red meat\"], \"week\": {\"monday\": {\"breakfast\": \"Greek yogurt with walnuts and honey\", \"lunch\": \"Lentil soup with whole grain bread\", \"dinner\": \"Grilled salmon with roasted vegetables\"}, \"tuesday\": {\"breakfast\": \"Oatmeal with fresh fruit\", \"lunch\": \"Hummus wrap with vegetables\", \"dinner\": \"Chicken souvlaki with tzatziki\"}}}",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-046",
+    "content_type": "json",
+    "title": "Backyard BBQ Party Planner",
+    "content_text": "{\"event\": \"Summer BBQ Party\", \"menu\": {\"proteins\": [\"brisket\", \"ribs\", \"burgers\", \"hot dogs\"], \"sides\": [\"coleslaw\", \"potato salad\", \"corn on the cob\", \"baked beans\"], \"desserts\": [\"watermelon\", \"s'mores\", \"peach cobbler\"]}, \"prep_timeline\": {\"day_before\": \"Prepare brisket rub and refrigerate overnight\", \"morning_of\": \"Start smoker at 8am for 12-hour brisket\", \"2_hours_before\": \"Prepare sides and set up serving area\"}}",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-047",
+    "content_type": "json",
+    "title": "Spring Vegetable Garden Planting Schedule",
+    "content_text": "{\"season\": \"spring\", \"zone\": \"USDA Zone 6\", \"schedule\": [{\"crop\": \"lettuce\", \"direct_sow\": \"4 weeks before last frost\"}, {\"crop\": \"tomatoes\", \"start_indoors\": \"8 weeks before last frost\", \"transplant\": \"2 weeks after last frost\"}, {\"crop\": \"beans\", \"direct_sow\": \"2 weeks after last frost\"}]}",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-048",
+    "content_type": "json",
+    "title": "Weekly Bathroom Deep Cleaning Checklist",
+    "content_text": "{\"frequency\": \"weekly\", \"tasks\": [\"scrub toilet bowl and exterior\", \"clean sink and faucet\", \"wipe down mirror\", \"mop floor with disinfectant\", \"wipe shower walls\", \"replace hand towels\", \"empty trash\"], \"supplies_needed\": [\"toilet bowl cleaner\", \"all-purpose disinfectant\", \"microfiber cloths\", \"mop\"]}",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-049",
+    "content_type": "json",
+    "title": "Patio Furniture Comparison Guide",
+    "content_text": "{\"category\": \"outdoor furniture\", \"materials_compared\": [\"teak\", \"aluminum\", \"wicker\", \"wrought iron\"], \"summary\": \"Teak is the premium choice for durability. Aluminum resists rust perfectly for coastal areas. Wicker offers comfort but needs covers in rain. Wrought iron is heavy and classic but requires annual rust treatment.\"}",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-050",
+    "content_type": "json",
+    "title": "Bathroom Remodel Cost Breakdown",
+    "content_text": "{\"project\": \"Master Bathroom Remodel\", \"total_range\": \"$8,000-$25,000\", \"line_items\": {\"demo\": \"$500-$1,500\", \"plumbing\": \"$1,500-$5,000\", \"tile_labor\": \"$2,000-$4,000\", \"tile_materials\": \"$500-$2,000\", \"vanity_sink\": \"$400-$3,000\", \"toilet\": \"$200-$800\", \"shower_door\": \"$300-$1,500\", \"fixtures\": \"$300-$1,200\", \"lighting\": \"$200-$600\", \"paint\": \"$100-$300\"}}",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-051",
+    "content_type": "json",
+    "title": "Container Garden Setup Guide",
+    "content_text": "{\"title\": \"Balcony Container Garden\", \"space\": \"small balcony or patio\", \"containers\": [{\"size\": \"5-gallon\", \"suitable_plants\": [\"tomatoes\", \"peppers\", \"eggplant\"]}, {\"size\": \"3-gallon\", \"suitable_plants\": [\"herbs\", \"lettuce\", \"spinach\"]}, {\"size\": \"10-gallon\", \"suitable_plants\": [\"dwarf fruit trees\", \"climbing beans\"]}], \"soil_mix\": \"Use potting mix, never garden soil in containers\", \"watering\": \"Check daily — containers dry faster than ground beds\"}",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-052",
+    "content_type": "json",
+    "title": "Home Energy Savings Analysis",
+    "content_text": "{\"audit_type\": \"DIY energy assessment\", \"findings\": {\"heating_cooling\": {\"issue\": \"Poor attic insulation\", \"fix\": \"Add R-38 blown-in insulation\", \"annual_savings\": \"$280\"}, \"water_heater\": {\"issue\": \"Tank water heater over 12 years old\", \"fix\": \"Replace with heat pump water heater\", \"annual_savings\": \"$350\"}, \"air_sealing\": {\"issue\": \"Drafty windows and door frames\", \"fix\": \"Weatherstripping and caulking\", \"annual_savings\": \"$120\"}}}",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-053",
+    "content_type": "json",
+    "title": "Newborn Baby Gear Essentials Checklist",
+    "content_text": "{\"category\": \"baby gear\", \"essentials\": [\"convertible crib\", \"bassinet for early months\", \"car seat (infant)\", \"stroller\", \"baby monitor\", \"breast pump\", \"swaddle blankets (6+)\", \"sleepsacks\", \"thermometer\", \"nail file\"], \"nice_to_have\": [\"swing\", \"bouncer seat\", \"white noise machine\", \"nursing pillow\"]}",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-054",
+    "content_type": "json",
+    "title": "After-School Activity Ideas for Kids Ages 6-12",
+    "content_text": "{\"age_group\": \"6-12 years\", \"activities\": [{\"name\": \"LEGO Robotics\", \"skills\": [\"engineering\", \"coding\", \"teamwork\"]}, {\"name\": \"Art Class\", \"skills\": [\"creativity\", \"fine motor\", \"self-expression\"]}, {\"name\": \"Swimming Lessons\", \"skills\": [\"safety\", \"fitness\", \"discipline\"]}, {\"name\": \"Chess Club\", \"skills\": [\"strategy\", \"patience\", \"focus\"]}]}",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-055",
+    "content_type": "json",
+    "title": "Teen Screen Time Guidelines Reference",
+    "content_text": "{\"source\": \"Pediatric guidelines synthesis\", \"recommendations\": {\"age_13_15\": \"1-2 hours recreational daily, not before bed\", \"age_16_18\": \"Consistent boundaries, priority on sleep and homework\"}, \"warning_signs\": [\"sleep disruption\", \"mood changes when device removed\", \"neglecting homework\", \"reduced physical activity\"]}",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-056",
+    "content_type": "json",
+    "title": "Kindergarten Readiness Skills Guide",
+    "content_text": "{\"title\": \"Is My Child Ready for Kindergarten?\", \"academic_skills\": {\"literacy\": [\"recognizes own name in print\", \"knows most letters\", \"understands that print is read left to right\"], \"math\": [\"counts to 20\", \"recognizes numbers 1-10\", \"understands more and less\"]}, \"social_skills\": [\"separates from parent without distress\", \"takes turns\", \"follows 2-step directions\", \"uses words to express needs\"]}",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-057",
+    "content_type": "json",
+    "title": "Family Vacation Budget Template",
+    "content_text": "{\"trip\": \"Theme Park Vacation\", \"family_size\": 4, \"duration_days\": 5, \"budget\": {\"flights\": 1200, \"hotel_5_nights\": 900, \"park_tickets\": 800, \"food_daily\": 120, \"transportation\": 200, \"souvenirs\": 150}, \"total_estimated\": 3250, \"money_saving_tips\": [\"Book park tickets online for discount\", \"Pack snacks to reduce park food costs\", \"Stay off-site to save $100+/night\"]}",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-058",
+    "content_type": "json",
+    "title": "Potty Training Progress Tracker",
+    "content_text": "{\"method\": \"3-Day Potty Training\", \"readiness_checklist\": [\"stays dry for 2+ hours\", \"shows interest in toilet\", \"can pull pants up and down\"], \"schedule\": {\"day_1\": \"Stay home, bare-bottomed, watch for cues, celebrate every success\", \"day_2\": \"Introduce underwear, maintain vigilance, brief outings\", \"day_3\": \"Return to normal activities with underwear, pack changes\"}, \"common_setbacks\": \"Regression is normal during stress. Calmly return to basics.\"}",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-059",
+    "content_type": "json",
+    "title": "Summer 2026 Movie Preview",
+    "content_text": "{\"season\": \"Summer 2026\", \"releases\": [{\"title\": \"Horizon Command\", \"genre\": \"action\", \"release\": \"June 15\"}, {\"title\": \"The Last Starlight\", \"genre\": \"sci-fi\", \"release\": \"July 4\"}, {\"title\": \"Family Chaos\", \"genre\": \"animated\", \"release\": \"July 18\"}], \"summary\": \"Blockbuster season delivers superhero sequels, original sci-fi, and family-friendly animation\"}",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-060",
+    "content_type": "json",
+    "title": "Top Video Game Releases Q2 2026",
+    "content_text": "{\"quarter\": \"Q2 2026\", \"platform_picks\": {\"console\": [\"racing sequel with ray-traced visuals\", \"open-world RPG with 100+ hour story\"], \"pc\": [\"strategy title with modding support\", \"indie roguelike with co-op\"], \"mobile\": [\"match-3 with narrative\", \"idle RPG\"]}, \"editor_pick\": \"The open-world RPG stands out for storytelling depth and technical achievement\"}",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-061",
+    "content_type": "json",
+    "title": "Best Podcasts by Category 2026",
+    "content_text": "{\"type\": \"podcast guide\", \"categories\": {\"true_crime\": \"Case Solved, My Favorite Murder\", \"comedy\": \"My Brother My Brother And Me, How Did This Get Made\", \"news\": \"Up First, The Daily\", \"storytelling\": \"Serial, Radiolab\", \"history\": \"Hardcore History, Revolutions\"}}",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-062",
+    "content_type": "json",
+    "title": "Book Club Reading List: Historical Fiction",
+    "content_text": "{\"theme\": \"Historical Fiction\", \"selections\": [{\"title\": \"The Midnight Library\", \"period\": \"contemporary\", \"discussion_questions\": 8}, {\"title\": \"All the Light We Cannot See\", \"period\": \"WWII\", \"discussion_questions\": 12}], \"meeting_format\": {\"duration_minutes\": 90, \"structure\": [\"welcome 10min\", \"book discussion 60min\", \"next book selection 20min\"]}}",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-063",
+    "content_type": "json",
+    "title": "National Park Trail Data",
+    "content_text": "{\"park\": \"Glacier National Park\", \"trails\": [{\"name\": \"Highline Trail\", \"distance_miles\": 11.6, \"difficulty\": \"moderate\", \"elevation_gain_ft\": 800, \"highlights\": [\"glacier views\", \"mountain goats\", \"wildflowers\"]}, {\"name\": \"Grinnell Glacier\", \"distance_miles\": 10.6, \"difficulty\": \"moderate-strenuous\", \"elevation_gain_ft\": 1600}]}",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-064",
+    "content_type": "json",
+    "title": "12-Week Strength Training Program",
+    "content_text": "{\"program\": \"Beginner Strength Building\", \"frequency\": \"3 days per week\", \"phases\": {\"weeks_1_4\": {\"focus\": \"Foundation\", \"rep_range\": \"12-15\", \"exercises\": [\"squat\", \"deadlift\", \"bench press\", \"rows\", \"overhead press\"]}, \"weeks_5_8\": {\"focus\": \"Progressive overload\", \"rep_range\": \"8-10\"}, \"weeks_9_12\": {\"focus\": \"Strength peak\", \"rep_range\": \"4-6\"}}}",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-065",
+    "content_type": "json",
+    "title": "Car Maintenance Schedule by Mileage",
+    "content_text": "{\"vehicle\": \"Typical Gasoline Sedan\", \"schedule\": [{\"interval\": \"5,000 miles\", \"tasks\": [\"oil change\", \"tire rotation\", \"fluid checks\"]}, {\"interval\": \"15,000 miles\", \"tasks\": [\"cabin air filter\", \"inspect brakes\"]}, {\"interval\": \"30,000 miles\", \"tasks\": [\"engine air filter\", \"inspect belts\"]}, {\"interval\": \"60,000 miles\", \"tasks\": [\"spark plugs\", \"coolant flush\"]}]}",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-066",
+    "content_type": "json",
+    "title": "EV Charging Station Network Comparison",
+    "content_text": "{\"networks\": [{\"name\": \"Tesla Supercharger\", \"max_kw\": 250, \"compatibility\": \"Tesla + CCS adapter\", \"stations_us\": 2000, \"cost_per_kwh\": 0.38}, {\"name\": \"Electrify America\", \"max_kw\": 350, \"compatibility\": \"CCS, CHAdeMO\", \"stations_us\": 900, \"cost_per_kwh\": 0.43}, {\"name\": \"ChargePoint\", \"max_kw\": 62, \"compatibility\": \"J1772, CCS\", \"stations_us\": 32000, \"cost_per_kwh\": 0.29}]}",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-067",
+    "content_type": "json",
+    "title": "Used Car Inspection Checklist",
+    "content_text": "{\"checklist_type\": \"pre-purchase inspection\", \"exterior\": [\"check panel gaps for accident repair evidence\", \"look for rust on wheel wells and frame\", \"inspect tire tread depth\", \"check all lights\"], \"interior\": [\"test all electronics\", \"check HVAC\", \"inspect upholstery\", \"look for water damage\"], \"engine\": [\"check for oil leaks under car\", \"inspect belts visually\", \"look for milky oil indicating coolant leak\"]}",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "flat"
+  },
+  {
+    "id": "TC-068",
+    "content_type": "json",
+    "title": "Midsize SUV Comparison: Top 5 Models",
+    "content_text": "{\"category\": \"midsize SUV\", \"year\": 2026, \"models\": [{\"name\": \"Honda Pilot\", \"mpg_combined\": 24, \"seating\": 8, \"base_price\": 40000, \"pros\": [\"reliability\", \"third-row access\"]}, {\"name\": \"Toyota Highlander\", \"mpg_combined\": 25, \"seating\": 8, \"base_price\": 41000, \"pros\": [\"resale value\", \"hybrid available\"]}, {\"name\": \"Ford Explorer\", \"mpg_combined\": 22, \"seating\": 7, \"base_price\": 38000, \"pros\": [\"towing capacity\", \"tech features\"]}]}",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-069",
+    "content_type": "json",
+    "title": "Child Car Seat Installation Guide by Type",
+    "content_text": "{\"title\": \"Car Seat Safety Guide\", \"types\": {\"infant_seat\": {\"weight_range\": \"4-35 lbs\", \"direction\": \"rear-facing only\", \"latch\": \"required until 2 years old or weight limit\"}, \"convertible\": {\"weight_range\": \"4-65 lbs\", \"direction\": \"rear-facing then forward-facing\", \"recommendation\": \"keep rear-facing as long as possible\"}, \"booster\": {\"weight_range\": \"40-120 lbs\", \"belt_positioning\": \"lap belt across hips, shoulder belt across chest\"}}, \"installation_check\": \"Visit a certified child passenger safety technician for free inspection\"}",
+    "expected_vertical": "automotive",
+    "test_category": "ambiguous",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-070",
+    "content_type": "json",
+    "title": "Car Audio Upgrade Guide for Enthusiasts",
+    "content_text": "{\"project\": \"Car Audio System Upgrade\", \"components\": {\"head_unit\": {\"type\": \"aftermarket with Apple CarPlay/Android Auto\", \"typical_cost\": \"$200-500\"}, \"speakers\": {\"front_stage\": \"component set with separate tweeter\", \"typical_cost\": \"$150-400 per pair\"}, \"subwoofer\": {\"type\": \"10-inch sealed enclosure\", \"amplifier\": \"mono amp 500W RMS\"}, \"sound_deadening\": \"apply to all door panels to reduce road noise\"}}",
+    "expected_vertical": "automotive",
+    "test_category": "ambiguous",
+    "sub_category": "nested"
+  },
+  {
+    "id": "TC-071",
+    "content_type": "podcast",
+    "title": "Farm to Table Cooking: Interview with Chef Maria Santos",
+    "content_text": "[TRANSCRIPT] HOST: Today we're talking with Chef Maria Santos about the farm-to-table movement and how home cooks can adopt these principles. CHEF: The key is knowing your local farmers and understanding seasonal produce cycles. When you cook with what's truly in season, the ingredients speak for themselves — you need much less seasoning and manipulation. HOST: How do you apply this at home? CHEF: Start at your farmers market. Build relationships with vendors. Ask what's coming next week and plan your meals around that. Organic growing practices and soil health directly affect flavor.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-072",
+    "content_type": "podcast",
+    "title": "Keto Living with Nutritionist Dr. James Park",
+    "content_text": "[TRANSCRIPT] HOST: Dr. Park, ketogenic diets are everywhere. What does the science say? DR. PARK: The evidence for keto in epilepsy management is robust. For weight loss, it works through caloric restriction as much as metabolic change. The high-protein, low-carb approach does reduce hunger hormones. KEY CONCERN: Long-term studies are limited. I advise patients to front-load the first 6 weeks to establish fat adaptation, then consider a more sustainable low-carb approach. The meal prep discipline required actually teaches excellent nutritional habits.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-073",
+    "content_type": "podcast",
+    "title": "The History of American BBQ: From Pits to Competitions",
+    "content_text": "[TRANSCRIPT] Today we explore the rich history of American barbecue — from its Indigenous roots through African American pit traditions to the four regional styles: Carolina pulled pork with vinegar sauce, Texas brisket dry-rubbed and smoked over oak, Kansas City ribs with sweet molasses sauce, and Memphis dry-rubbed ribs. Competition barbecue emerged in the 1970s and now draws thousands of teams worldwide. The tension between tradition and innovation defines modern BBQ culture.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-074",
+    "content_type": "podcast",
+    "title": "The Science of Sourdough: Why Wild Yeast Makes Better Bread",
+    "content_text": "[TRANSCRIPT] Sourdough fermentation is a fascinating intersection of microbiology and culinary tradition. The starter ecosystem contains wild yeast and lactic acid bacteria working in symbiosis. Yeast provides leavening via CO2; bacteria produce lactic and acetic acids, responsible for sour flavor. Long cold fermentation develops flavor complexity and improves digestibility by breaking down gluten proteins and phytic acid. Hydration level, flour protein content, and ambient temperature all interact to create wildly different results — which is why sourdough baking is as much art as science.",
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-075",
+    "content_type": "podcast",
+    "title": "Small Space Living: Design Tips from Interior Designer Kate Hughes",
+    "content_text": "[TRANSCRIPT] HOST: Kate, you specialize in small space design. What's the biggest mistake people make? KATE: Buying furniture that's too large. Scale is everything in small spaces. A massive sectional kills a small living room. HOST: What works instead? KATE: A loveseat, two chairs, and a coffee table with hidden storage. Use vertical space — floor-to-ceiling shelving draws the eye up. Mirrors double perceived space. Light, neutral walls expand rooms. Multi-functional furniture: storage ottomans, Murphy beds, dining tables that fold against walls.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-076",
+    "content_type": "podcast",
+    "title": "Master Gardener Q&A: Soil Health and Organic Pest Control",
+    "content_text": "[TRANSCRIPT] HOST: Master Gardener William Chen joins us to answer listener questions about soil and pest management. WILLIAM: Soil health is the foundation of all gardening success. A simple soil test — available at extension offices — reveals pH and nutrient levels. Most vegetables prefer 6.0-6.8 pH. Amending with compost annually transforms soil structure over time. For pest control organically: encourage beneficial insects like ladybugs and parasitic wasps with flowering plants; use row covers for vulnerable seedlings; hand-pick caterpillars at dusk. Neem oil works for many soft-bodied insects without harming beneficials when applied correctly.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-077",
+    "content_type": "podcast",
+    "title": "The American Kitchen: A History of How We Cook at Home",
+    "content_text": "[TRANSCRIPT] The modern American kitchen is a century of technological and social change compressed into one room. Before refrigeration, ice boxes and root cellars preserved food. The gas stove replaced wood-burning ranges in the 1920s. Refrigerators democratized food preservation in the 1940s. Open-plan kitchen-living rooms emerged in the 1970s. The microwave arrived in every home by the 1980s. Today, kitchen remodels represent the highest return-on-investment home renovation. Smart appliances and induction cooktops define the contemporary kitchen.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-078",
+    "content_type": "podcast",
+    "title": "How to Hire Contractors for Home Renovation",
+    "content_text": "[TRANSCRIPT] Home renovation projects live and die by contractor quality. Get three competitive bids — and beware the lowest one. Check license and insurance independently, not just their claim. Ask for references from similar projects completed in the past 12 months. A written contract specifying scope, timeline, payment schedule tied to milestones, and change-order process is non-negotiable. Never pay more than 30% upfront. Hold 10% retainage until the project is complete and all inspections pass. A good contractor's calendar is booked 2-3 months ahead.",
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-079",
+    "content_type": "podcast",
+    "title": "Raising Resilient Children: Child Psychologist Dr. Sarah Kim",
+    "content_text": "[TRANSCRIPT] HOST: Dr. Kim, resilience has become a parenting buzzword. What does it actually mean? DR. KIM: Resilience is the ability to recover from setbacks, adapt to change, and persevere through challenge. It's not toughness — it's flexibility. HOST: How do parents foster it? DR. KIM: Let children experience manageable struggle. Resist solving every problem for them. Validate their emotions — 'I see you're frustrated' — without fixing the feeling. Model your own emotional regulation. Positive discipline creates the safety that resilience requires.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-080",
+    "content_type": "podcast",
+    "title": "Teen Mental Health Crisis: What Parents Must Know",
+    "content_text": "[TRANSCRIPT] Pediatrician Dr. Torres discusses the teen mental health epidemic: anxiety and depression rates in teenagers have doubled since 2012, correlating with smartphone and social media adoption. Warning signs parents should watch for: withdrawal from activities and friends, changes in sleep patterns, declining grades, irritability beyond normal teen moodiness. What helps: consistent family meals together (protective factor shown in research), open conversation about social media use rather than bans, reducing academic pressure, ensuring adequate sleep. When to seek professional help: any mention of self-harm or hopelessness requires immediate action.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-081",
+    "content_type": "podcast",
+    "title": "A Century of Parenting Advice: How the Experts Changed Their Minds",
+    "content_text": "[TRANSCRIPT] Parenting advice is a moving target. The same century saw experts recommend bottle-feeding over breastfeeding, then reverse completely; rigid feeding schedules, then demand feeding; controlled crying, then attachment parenting. What these reversals reveal: parenting research is genuinely hard, cultural biases shape recommendations, and parents should approach expert advice with healthy skepticism. What has remained consistent: responsive caregiving, secure attachment, reading to children, and physical affection predict positive outcomes across generations and cultures.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-082",
+    "content_type": "podcast",
+    "title": "Raising Kids in the Digital Age: Screens, Social Media, and Balance",
+    "content_text": "[TRANSCRIPT] Every generation has its anxieties about new technology and children. Today's parents navigate smartphones, social media, YouTube, video games, and educational apps — technologies that didn't exist when they were children. Research suggests it's not screen time quantity but screen time quality that matters most. Co-viewing and discussing media together produces better outcomes than passive unlimited consumption. Social skills develop through face-to-face interaction — prioritize it. Tech-free family time preserves connection. Delayed smartphone introduction — 8th grade is a popular community-level commitment — reduces social comparison pressures.",
+    "expected_vertical": "parenting-family",
+    "test_category": "standard",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-083",
+    "content_type": "podcast",
+    "title": "Documentary Filmmaking: Interview with Director Alex Rivera",
+    "content_text": "[TRANSCRIPT] HOST: Alex, your documentaries have won multiple awards. What makes a documentary compelling? ALEX: Authentic access to real people in real situations. The camera follows — it doesn't direct. HOST: How do you gain that access? ALEX: Time and trust. You spend weeks with subjects before filming. They forget the camera is there. The best documentary moments are unplanned — they require patience. HOST: What about classic documentary films that influenced you? ALEX: Errol Morris changed the form with first-person interview rigs that let subjects speak directly to camera. Frederick Wiseman showed that simply watching institutions reveal themselves is powerful.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-084",
+    "content_type": "podcast",
+    "title": "Building an Indie Game: One Developer's Journey",
+    "content_text": "[TRANSCRIPT] Indie game developer Maya Chen shares the 3-year journey of building her debut puzzle-platformer. She started with zero programming experience, learned Unity through YouTube tutorials, and funded development through freelance design work. The game entered early access after 18 months with 500 dedicated beta players providing feedback. Steam release to 12,000 wishlisters. Lessons: build your community before launch; scope relentlessly; never underestimate QA time; a genuine personal vision resonates with players more than chasing trends.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-085",
+    "content_type": "podcast",
+    "title": "The Golden Age of Television: Why We're Living in Peak TV",
+    "content_text": "[TRANSCRIPT] Television has undergone a complete artistic reinvention since The Sopranos premiered in 1999. The shift from episodic to serialized narrative, the influx of film talent, and the creative freedom of premium cable and streaming created an unprecedented explosion of quality. Breaking Bad, The Wire, Mad Men, Game of Thrones, Succession — each redefined what television could achieve. The streaming era accelerated production volume while challenging discovery. Too much television: the average viewer can't keep up with new releases, creating a nostalgia economy where classic dramas resurface on streaming years after airing.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-086",
+    "content_type": "podcast",
+    "title": "Rock Music's Revival: From Bedroom Studios to Arenas",
+    "content_text": "[TRANSCRIPT] After a decade of pop and hip-hop dominance, rock music is staging a comeback in the mid-2020s. A wave of guitar-driven bands raised on streaming-era rock are filling venues. The difference from classic rock: bedroom production democratized recording; TikTok algorithms surfaced guitar content to new audiences; genre-blending with electronic elements kept the sound fresh. Festival lineups increasingly feature rock headliners alongside EDM and hip-hop. Album reviews are seeing rock releases command serious critical attention for the first time in years.",
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-087",
+    "content_type": "podcast",
+    "title": "Electric Vehicle Engineering: Interview with Battery Expert Dr. Chen Wei",
+    "content_text": "[TRANSCRIPT] HOST: Dr. Wei, battery technology is the heart of the EV revolution. Where are we? DR. WEI: We've achieved energy density that makes 300+ mile range affordable. The next frontier is charging speed — solid-state batteries promise 10-minute charges. HOST: When do consumers see that? DR. WEI: Production-scale solid-state by 2028-2030. Today's lithium iron phosphate chemistry offers excellent longevity — 80% capacity at 500,000 miles in some fleet applications. HOST: What about charging infrastructure? DR. WEI: Grid capacity is the real bottleneck. Smart charging — filling cars at 2am when grid demand is low — is essential infrastructure.",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-088",
+    "content_type": "podcast",
+    "title": "Used Car Expert: How to Buy Smart in Any Market",
+    "content_text": "[TRANSCRIPT] Car dealer veteran and consumer advocate Tom Bradley shares 20 years of insider knowledge. Never buy a car the same day you see it — artificial urgency is a sales tactic. The best used car deals are private sales — no dealer markup, but no warranty. Certified pre-owned programs offer manufacturer warranty coverage worth the premium for buyers who want peace of mind. The sweet spot: a 3-year-old vehicle with 30,000-40,000 miles, still under manufacturer warranty, with 65-70% of the original value depreciated away.",
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "interview"
+  },
+  {
+    "id": "TC-089",
+    "content_type": "podcast",
+    "title": "Motorsport and the Thrill of Racing Culture",
+    "content_text": "[TRANSCRIPT] Motorsport sits at the intersection of engineering excellence and athletic competition. From Formula 1's 1,000-horsepower hybrid power units to grassroots autocross events in parking lots, car racing culture spans every budget. F1 has seen massive growth in US viewership thanks to the Netflix Drive to Survive docuseries. IndyCar features the legendary Indianapolis 500. NASCAR remains America's most-attended motorsport series. Amateur weekend warriors find community in SCCA club racing, time attack, and track days. The car enthusiast community has always lived at the boundary between automotive passion and entertainment.",
+    "expected_vertical": "automotive",
+    "test_category": "ambiguous",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-090",
+    "content_type": "podcast",
+    "title": "The Great American Road Trip: Stories from the Open Road",
+    "content_text": "[TRANSCRIPT] Road trips are a uniquely American form of self-discovery. Route 66, the Pacific Coast Highway, the Blue Ridge Parkway — these iconic routes promise adventure and epiphany. Our guests this week have each completed multi-week road trips and share what they learned: about the country's landscapes, its small towns, its regional food cultures, and themselves. Practical wisdom: book accommodations 2-3 days ahead rather than fully in advance to preserve flexibility; always carry jumper cables and a tire repair kit; stop at roadside diners, not chains.",
+    "expected_vertical": "automotive",
+    "test_category": "ambiguous",
+    "sub_category": "narrative"
+  },
+  {
+    "id": "TC-091",
+    "content_type": "video",
+    "title": "Air Fryer Crispy Chicken Thighs Tutorial",
+    "content_url": "s3://sibyl-content-uploads-dev/poc-test/video-tc091-placeholder.mp4",
+    "duration_seconds": 480,
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "tutorial"
+  },
+  {
+    "id": "TC-092",
+    "content_type": "video",
+    "title": "Beginner Sourdough Bread from Starter to Bake",
+    "content_url": "s3://sibyl-content-uploads-dev/poc-test/video-tc092-placeholder.mp4",
+    "duration_seconds": 720,
+    "expected_vertical": "food-cooking",
+    "test_category": "standard",
+    "sub_category": "tutorial"
+  },
+  {
+    "id": "TC-093",
+    "content_type": "video",
+    "title": "Bathroom Subway Tile Installation: Full DIY Tutorial",
+    "content_url": "s3://sibyl-content-uploads-dev/poc-test/video-tc093-placeholder.mp4",
+    "duration_seconds": 1200,
+    "expected_vertical": "home-garden",
+    "test_category": "standard",
+    "sub_category": "tutorial"
+  },
+  {
+    "id": "TC-094",
+    "content_type": "video",
+    "title": "Cooking Healthy Toddler Meals: Quick and Nutritious Ideas",
+    "content_url": "s3://sibyl-content-uploads-dev/poc-test/video-tc094-placeholder.mp4",
+    "duration_seconds": 600,
+    "expected_vertical": "parenting-family",
+    "test_category": "ambiguous",
+    "sub_category": "tutorial"
+  },
+  {
+    "id": "TC-095",
+    "content_type": "video",
+    "title": "30-Minute Full Body Yoga Flow for Beginners",
+    "content_url": "s3://sibyl-content-uploads-dev/poc-test/video-tc095-placeholder.mp4",
+    "duration_seconds": 1800,
+    "expected_vertical": "entertainment",
+    "test_category": "standard",
+    "sub_category": "tutorial"
+  },
+  {
+    "id": "TC-096",
+    "content_type": "video",
+    "title": "How to Change Brake Pads and Rotors at Home",
+    "content_url": "s3://sibyl-content-uploads-dev/poc-test/video-tc096-placeholder.mp4",
+    "duration_seconds": 900,
+    "expected_vertical": "automotive",
+    "test_category": "standard",
+    "sub_category": "tutorial"
+  },
+  {
+    "id": "TC-097",
+    "content_type": "video",
+    "title": "Car Detailing Like a Pro: Complete Interior and Exterior Guide",
+    "content_url": "s3://sibyl-content-uploads-dev/poc-test/video-tc097-placeholder.mp4",
+    "duration_seconds": 1500,
+    "expected_vertical": "automotive",
+    "test_category": "ambiguous",
+    "sub_category": "tutorial"
+  },
+  {
+    "id": "TC-098",
+    "content_type": "video",
+    "title": "Garden Tour",
+    "content_url": "s3://sibyl-content-uploads-dev/poc-test/video-tc098-placeholder.mp4",
+    "duration_seconds": 60,
+    "expected_vertical": "home-garden",
+    "test_category": "edge-case",
+    "sub_category": "very-short-duration"
+  },
+  {
+    "id": "TC-099",
+    "content_type": "article",
+    "title": "Empty Article Test",
+    "content_text": "",
+    "expected_vertical": "food-cooking",
+    "test_category": "edge-case",
+    "sub_category": "empty-body"
+  },
+  {
+    "id": "TC-100",
+    "content_type": "article",
+    "title": "Résumé-Style Content: Über-Healthy Meal Prép with Ñoño Sauce",
+    "content_text": "Préparé your meals with a fresh twist using ñoño sauce — a rich, creamy condiment from España. Combine Greek yogurt, garlic, herbs, and a touch of crème fraîche. Perfect for vegetarian bowls, salads, and as a dipping sauce. Café-style presentation: serve in small ramekins alongside crudités. Rich in probiotics and anti-inflammatory properties from the Mediterranean-inspired herb blend.",
+    "expected_vertical": "food-cooking",
+    "test_category": "edge-case",
+    "sub_category": "unicode"
+  }
+]

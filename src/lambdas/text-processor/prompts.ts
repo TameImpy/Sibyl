@@ -62,16 +62,24 @@ function buildContentTypePrompt(contentType: ContentType): string {
   switch (contentType) {
     case ContentType.ARTICLE:
       return `CONTENT TYPE: Web Article
-Focus on:
+Scan ALL of the following dimensions — do not stop at the primary topic:
 - Main topics and themes of the article
+- Content format (e.g. interview, review, preview, profile, recommendation piece)
+- Source materials and referenced works explicitly mentioned (books, novels, films, shows) — tag their categories (e.g. a novel series mentioned → fiction-books)
+- Tangential subjects mentioned in passing, backstory, or context
+- Tone and recommendation signals — does the article enthusiastically recommend something? (e.g. "must watch", strong positive framing → binge-worthy-shows)
 - Specific techniques, recipes, or step-by-step guidance mentioned
 - Products, ingredients, or tools specifically featured
 - Reader intent (e.g. beginner vs expert, shopping vs learning)`;
 
     case ContentType.JSON:
       return `CONTENT TYPE: Archived JSON Record
-Focus on:
+Scan ALL of the following dimensions — do not stop at the primary topic:
 - Primary subject matter indicated by the structured data
+- Content format signals (e.g. interview, review, preview, profile, recommendation piece)
+- Source materials and referenced works explicitly mentioned (books, novels, films, shows) — tag their categories (e.g. a novel series mentioned → fiction-books)
+- Tangential subjects mentioned in passing, backstory, or context
+- Tone and recommendation signals — does the content enthusiastically recommend something? (e.g. "must watch", strong positive framing → binge-worthy-shows)
 - Category or classification fields present in the record
 - Key descriptors and attributes`;
 

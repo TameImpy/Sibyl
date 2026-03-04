@@ -1,10 +1,13 @@
 /**
- * Gemini client for video frame tagging.
+ * Gemini client for video tagging via the Gemini File API.
  *
  * Responsibilities:
- *  - Build the Gemini API request for per-frame video analysis
- *  - Parse Gemini's response into TagResult[]
- *  - Short-circuit only the API call when mock mode is enabled
+ *  - Upload video bytes to Gemini File API (real mode)
+ *  - Poll until the file is ACTIVE
+ *  - Issue a single multimodal generateContent call covering all sampled frames
+ *  - Parse Gemini's per-frame response into TagResult[][]
+ *  - Delete the uploaded file after processing (best-effort)
+ *  - Short-circuit only the API calls when mock mode is enabled
  *    (frame sampling, taxonomy validation, cost tracking all still run)
  */
 
@@ -43,18 +46,21 @@ const MOCK_FRAME_TAGS: TagResult[] = [
 const MOCK_TOKENS_PER_FRAME = { input: 200, output: 80 };
 
 /**
- * Invoke Gemini to tag video frames.
+ * Invoke Gemini to tag video content.
  *
- * In real mode: calls Gemini API once per frame with a text prompt.
+ * In real mode: uploads video to Gemini File API, waits for ACTIVE state,
+ *   issues one multimodal generateContent call, then deletes the file.
  * In mock mode: returns MOCK_FRAME_TAGS for every frame (API call skipped).
  *
- * @param apiKey       Gemini API key (ignored in mock mode).
- * @param apiUrl       Gemini API base URL.
- * @param frames       List of frame timestamps produced by sampleFrames().
- * @param videoTitle   Title of the video (injected into the prompt).
- * @param taxonomyText Formatted taxonomy from formatTaxonomyForPrompt().
- * @param maxTags      Maximum tags to request per frame.
- * @param mockEnabled  When true, returns mock data without calling the API.
+ * @param apiKey        Gemini API key (ignored in mock mode).
+ * @param apiUrl        Gemini API base URL.
+ * @param frames        List of frame timestamps produced by sampleFrames().
+ * @param videoTitle    Title of the video (injected into the prompt).
+ * @param taxonomyText  Formatted taxonomy from formatTaxonomyForPrompt().
+ * @param maxTags       Maximum tags to request per frame.
+ * @param mockEnabled   When true, returns mock data without calling the API.
+ * @param videoBytes    Raw video bytes (required in real mode).
+ * @param videoMimeType MIME type of the video e.g. 'video/mp4' (required in real mode).
  */
 export async function invokeGeminiForTagging(
   apiKey: string,
@@ -63,7 +69,9 @@ export async function invokeGeminiForTagging(
   videoTitle: string,
   taxonomyText: string,
   maxTags: number,
-  mockEnabled: boolean
+  mockEnabled: boolean,
+  videoBytes?: Buffer,
+  videoMimeType?: string
 ): Promise<GeminiTaggingResult> {
   if (mockEnabled) {
     logger.warn(
@@ -77,93 +85,121 @@ export async function invokeGeminiForTagging(
     };
   }
 
-  // Real mode: call Gemini once per sampled frame
-  let totalInputTokens = 0;
-  let totalOutputTokens = 0;
-  const frameTags: TagResult[][] = [];
-
-  for (const frame of frames) {
-    const result = await callGeminiForFrame(
-      apiKey,
-      apiUrl,
-      frame,
-      videoTitle,
-      taxonomyText,
-      maxTags
-    );
-    frameTags.push(result.tags);
-    totalInputTokens += result.inputTokens;
-    totalOutputTokens += result.outputTokens;
+  if (!videoBytes || !videoMimeType) {
+    throw new Error('videoBytes and videoMimeType are required in real mode');
   }
 
-  return { frameTags, inputTokens: totalInputTokens, outputTokens: totalOutputTokens };
+  // 1. Upload video to Gemini File API
+  logger.info('Uploading video to Gemini File API', {
+    size_bytes: videoBytes.length,
+    mime_type: videoMimeType,
+  });
+  const fileUri = await uploadVideoToGemini(apiKey, apiUrl, videoBytes, videoMimeType, videoTitle);
+  logger.info('Video uploaded to Gemini', { file_uri: fileUri });
+
+  // 2. Wait for file to become ACTIVE
+  await waitForGeminiFile(apiKey, fileUri);
+  logger.info('Gemini file is ACTIVE', { file_uri: fileUri });
+
+  // 3. Single multimodal generateContent call
+  const { frameTags, inputTokens, outputTokens } = await analyzeVideoWithGemini(
+    apiKey,
+    apiUrl,
+    fileUri,
+    videoMimeType,
+    frames,
+    videoTitle,
+    taxonomyText,
+    maxTags
+  );
+
+  // 4. Delete file (best-effort, fire-and-forget style)
+  deleteGeminiFile(apiKey, fileUri).catch((err) => {
+    logger.warn('Failed to delete Gemini file (non-fatal)', { file_uri: fileUri, error: String(err) });
+  });
+
+  return { frameTags, inputTokens, outputTokens };
 }
 
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------
 
-interface SingleFrameResult {
-  tags: TagResult[];
-  inputTokens: number;
-  outputTokens: number;
-}
-
-async function callGeminiForFrame(
+/**
+ * Upload video bytes to the Gemini File API using multipart upload.
+ * Returns the file URI (e.g. "files/abc123").
+ */
+async function uploadVideoToGemini(
   apiKey: string,
   apiUrl: string,
-  frame: FrameSample,
-  videoTitle: string,
-  taxonomyText: string,
-  maxTags: number
-): Promise<SingleFrameResult> {
-  const prompt = buildFramePrompt(videoTitle, frame.timestampSeconds, taxonomyText, maxTags);
+  videoBytes: Buffer,
+  mimeType: string,
+  displayName: string
+): Promise<string> {
+  const metadataPart = JSON.stringify({ file: { display_name: displayName } });
+  const boundary = `sibyl-boundary-${Date.now()}`;
+
+  const bodyParts: Buffer[] = [
+    Buffer.from(
+      `--${boundary}\r\nContent-Type: application/json; charset=utf-8\r\n\r\n${metadataPart}\r\n`
+    ),
+    Buffer.from(`--${boundary}\r\nContent-Type: ${mimeType}\r\n\r\n`),
+    videoBytes,
+    Buffer.from(`\r\n--${boundary}--`),
+  ];
+  const body = Buffer.concat(bodyParts);
 
   const response = await axios.post(
-    `${apiUrl}/v1beta/models/gemini-1.5-flash:generateContent`,
-    {
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.3, maxOutputTokens: 512 },
-    },
+    `${apiUrl}/upload/v1beta/files?uploadType=multipart`,
+    body,
     {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': `multipart/related; boundary=${boundary}`,
+        'X-Goog-Upload-Protocol': 'multipart',
         'x-goog-api-key': apiKey,
+        'Content-Length': String(body.length),
       },
-      timeout: 30_000,
+      timeout: 120_000,
+      maxBodyLength: Infinity,
     }
   );
 
-  const tags = parseGeminiResponse(response.data as GeminiResponseBody);
-  const usage = (response.data as GeminiResponseBody).usageMetadata;
-
-  return {
-    tags,
-    inputTokens: usage?.promptTokenCount ?? 0,
-    outputTokens: usage?.candidatesTokenCount ?? 0,
-  };
+  const fileUri: string | undefined = (response.data as { file?: { uri?: string } }).file?.uri;
+  if (!fileUri) {
+    throw new Error('Gemini File API did not return a file URI');
+  }
+  return fileUri;
 }
 
-function buildFramePrompt(
-  videoTitle: string,
-  timestampSeconds: number,
-  taxonomyText: string,
-  maxTags: number
-): string {
-  const minutes = Math.floor(timestampSeconds / 60);
-  const seconds = timestampSeconds % 60;
+/**
+ * Poll the Gemini File API until the file reaches ACTIVE state.
+ */
+async function waitForGeminiFile(
+  apiKey: string,
+  fileUri: string,
+  maxWaitMs = 120_000
+): Promise<void> {
+  const deadline = Date.now() + maxWaitMs;
+  const pollIntervalMs = 2_000;
 
-  return `You are an expert video content tagging system. Analyze the video frame at timestamp ${minutes}m${seconds}s.
+  while (Date.now() < deadline) {
+    const response = await axios.get(fileUri, {
+      params: { key: apiKey },
+      timeout: 10_000,
+    });
 
-Video title: ${videoTitle}
+    const state: string | undefined = (response.data as { state?: string }).state;
+    if (state === 'ACTIVE') {
+      return;
+    }
+    if (state === 'FAILED') {
+      throw new Error(`Gemini file processing failed: ${fileUri}`);
+    }
 
-Return up to ${maxTags} taxonomy tags relevant to what is shown in this frame.
+    await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+  }
 
-IMPORTANT: Return ONLY tags from this approved taxonomy — never invent new tags:
-${taxonomyText}
-
-Return a JSON array: [{"tag": "...", "confidence": 0.0-1.0, "reasoning": "..."}]
-Return ONLY the JSON array.`;
+  throw new Error(`Timed out waiting for Gemini file to become ACTIVE: ${fileUri}`);
 }
 
 interface GeminiResponseBody {
@@ -176,32 +212,144 @@ interface GeminiResponseBody {
   };
 }
 
-function parseGeminiResponse(responseBody: GeminiResponseBody): TagResult[] {
-  const text = responseBody.candidates?.[0]?.content?.parts?.[0]?.text;
+/**
+ * Issue a single multimodal generateContent call that asks Gemini to analyze
+ * the full video and return per-timestamp tag analysis.
+ */
+async function analyzeVideoWithGemini(
+  apiKey: string,
+  apiUrl: string,
+  fileUri: string,
+  mimeType: string,
+  frames: FrameSample[],
+  videoTitle: string,
+  taxonomyText: string,
+  maxTags: number
+): Promise<{ frameTags: TagResult[][]; inputTokens: number; outputTokens: number }> {
+  const prompt = buildMultimodalPrompt(frames, videoTitle, taxonomyText, maxTags);
+
+  const response = await axios.post(
+    `${apiUrl}/v1beta/models/gemini-2.5-flash:generateContent`,
+    {
+      contents: [
+        {
+          parts: [
+            { file_data: { mime_type: mimeType, file_uri: fileUri } },
+            { text: prompt },
+          ],
+        },
+      ],
+      generationConfig: { temperature: 0.3, maxOutputTokens: 16384 },
+    },
+    {
+      params: { key: apiKey },
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 120_000,
+    }
+  );
+
+  const body = response.data as GeminiResponseBody;
+  const text = body.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) {
     throw new Error('Invalid Gemini response: missing text content');
   }
 
-  // Handle markdown code fence wrapping
-  const jsonMatch = text.match(/```json\n?([\s\S]*?)\n?```/) ?? text.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) {
-    throw new Error('Could not extract JSON array from Gemini response');
+  const frameTags = parseMultimodalResponse(text, frames.length);
+  const usage = body.usageMetadata;
+
+  return {
+    frameTags,
+    inputTokens: usage?.promptTokenCount ?? 0,
+    outputTokens: usage?.candidatesTokenCount ?? 0,
+  };
+}
+
+/**
+ * Delete a file from the Gemini File API. Best-effort — caller should not rethrow.
+ */
+async function deleteGeminiFile(
+  apiKey: string,
+  fileUri: string
+): Promise<void> {
+  await axios.delete(fileUri, {
+    params: { key: apiKey },
+    timeout: 10_000,
+  });
+  logger.info('Gemini file deleted', { file_uri: fileUri });
+}
+
+function buildMultimodalPrompt(
+  frames: FrameSample[],
+  videoTitle: string,
+  taxonomyText: string,
+  maxTags: number
+): string {
+  const frameList = frames
+    .map((f) => {
+      const m = Math.floor(f.timestampSeconds / 60);
+      const s = f.timestampSeconds % 60;
+      return `  - ${m}m${s}s`;
+    })
+    .join('\n');
+
+  return `You are an expert video content tagging system. Analyze the provided video titled "${videoTitle}".
+
+Examine the following timestamps and return tag analysis for each:
+${frameList}
+
+IMPORTANT: Return ONLY tags from this approved taxonomy — never invent new tags:
+${taxonomyText}
+
+Return up to ${maxTags} tags per timestamp.
+
+Return a JSON object in this exact format:
+{
+  "frames": [
+    {
+      "timestamp_seconds": <number>,
+      "tags": [
+        { "tag": "<taxonomy-tag>", "confidence": <0.0-1.0>, "reasoning": "<brief reason>" }
+      ]
+    }
+  ]
+}
+
+Return ONLY the JSON object. No markdown fences.`;
+}
+
+interface MultimodalFrameEntry {
+  timestamp_seconds: number;
+  tags: Array<{ tag: string; confidence: number; reasoning?: string }>;
+}
+
+function parseMultimodalResponse(text: string, expectedFrameCount: number): TagResult[][] {
+  // Strip optional markdown code fences
+  const stripped = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+
+  let parsed: { frames?: MultimodalFrameEntry[] };
+  try {
+    parsed = JSON.parse(stripped) as { frames?: MultimodalFrameEntry[] };
+  } catch {
+    throw new Error(`Could not parse Gemini multimodal response as JSON: ${stripped.slice(0, 200)}`);
   }
 
-  const jsonText = jsonMatch[1] ?? jsonMatch[0];
-  const parsed = JSON.parse(jsonText) as Array<{
-    tag: string;
-    confidence: number;
-    reasoning?: string;
-  }>;
-
-  if (!Array.isArray(parsed)) {
-    throw new Error('Gemini response did not return a JSON array');
+  if (!Array.isArray(parsed.frames)) {
+    throw new Error('Gemini multimodal response missing "frames" array');
   }
 
-  return parsed.map((t) => ({
-    tag: t.tag,
-    confidence: t.confidence,
-    reasoning: t.reasoning,
-  }));
+  // Map back to TagResult[][]; pad with empty arrays if Gemini returned fewer frames
+  const result: TagResult[][] = parsed.frames.map((frame) =>
+    (frame.tags ?? []).map((t) => ({
+      tag: t.tag,
+      confidence: t.confidence,
+      reasoning: t.reasoning,
+    }))
+  );
+
+  // Ensure length matches expected frame count
+  while (result.length < expectedFrameCount) {
+    result.push([]);
+  }
+
+  return result.slice(0, expectedFrameCount);
 }

@@ -28,7 +28,9 @@ const config = loadConfig();
 validateConfig(config);
 
 const bedrockClient = new BedrockRuntimeClient({ region: config.bedrockRegion });
-const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient({}), {
+  marshallOptions: { removeUndefinedValues: true },
+});
 const metricsCollector = getMetricsCollector();
 const bedrockCircuitBreaker = getCircuitBreaker('bedrock', {
   failureThreshold: config.circuitBreakerThreshold,
