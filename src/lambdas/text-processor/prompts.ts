@@ -38,6 +38,7 @@ Your task is to analyze content and assign relevant tags from a controlled taxon
 
 CONSTRAINTS:
 - Assign ONLY tags that exist exactly as listed in the provided taxonomy. Never invent new tags.
+- The taxonomy is structured as verticals → categories → tags. Use ONLY the leaf tag names (e.g. "comfort-food", "food-storage"). Do NOT use vertical names or category names as tags — they are organisational headings, not valid tags.
 - Return 3-10 tags maximum, prioritising quality over quantity.
 - Confidence scoring guide:
   - 0.9–1.0: Tag is central to the content
@@ -85,11 +86,17 @@ Scan ALL of the following dimensions — do not stop at the primary topic:
 
     case ContentType.PODCAST:
       return `CONTENT TYPE: Podcast Transcript
-Focus on:
-- Major discussion topics and episode segments
-- Guest expertise areas if a guest appears
-- Products, services, or techniques specifically mentioned
-- Recurring themes across the episode`;
+Scan ALL of the following dimensions — do not anchor on the dominant theme. Surface every relevant tag across ALL taxonomy verticals:
+- Episode format: identify whether this is an interview, solo monologue, panel discussion, or co-hosted conversation — tag the format
+- Primary subject matter: the explicit main topic(s) of the episode
+- Guest expertise areas: if a guest appears, tag their professional domain and background, not just the topic they were invited to discuss
+- Segment-by-segment sweep: podcasts often shift topic mid-episode; treat each segment or conversation thread as a separate tagging opportunity — do not let an early dominant theme suppress tags from later segments
+- Tangential subjects and anecdotes: digressions, personal stories, and offhand references often introduce cross-vertical tags (e.g. a gardening podcast discussing mental health therapy → tag BOTH gardening AND mental-health)
+- Specific techniques, methods, or practices described: step-by-step guidance, how-to advice, tips mentioned by hosts or guests
+- Products, tools, ingredients, or named resources explicitly mentioned
+- Named places, organisations, or institutions referenced in context
+- Cross-domain themes: actively look for tags from verticals other than the primary one — wellness in a cooking show, finance in a home improvement episode, parenting in a food podcast
+- Listener intent signals: is this episode aimed at beginners, enthusiasts, or experts? Does it motivate action (buying, trying, visiting)?`;
 
     case ContentType.VIDEO:
       return `CONTENT TYPE: Video

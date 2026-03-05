@@ -69,9 +69,11 @@ export function loadConfig(): AppConfig {
     videoProcessingQueueUrl: process.env.VIDEO_QUEUE_URL || '',
     dlqUrl: process.env.DLQ_URL || '',
 
-    // Bedrock - Claude 3.5 Sonnet v2 (BEDROCK_MOCK_ENABLED=true until account access restored)
+    // Bedrock — versioned cross-region inference profile ID.
+    // The short-form 'us.anthropic.claude-sonnet-4-6' is rejected at runtime;
+    // the full versioned ID is required by Bedrock Runtime.
     bedrockModelId:
-      process.env.BEDROCK_MODEL_ID || 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+      process.env.BEDROCK_MODEL_ID || 'us.anthropic.claude-sonnet-4-20250514-v1:0',
     bedrockRegion: process.env.BEDROCK_REGION || 'us-east-1',
 
     // RDS

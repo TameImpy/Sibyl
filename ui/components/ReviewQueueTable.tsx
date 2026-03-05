@@ -1,18 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 
 interface QueueItem {
   content_id: string;
   content_type: string;
+  title?: string;
   tags?: Array<{ tag: string; confidence: number }>;
   created_at: string;
   processing_metadata?: {
     model_used: string;
     processing_time_ms: number;
-  };
-  metadata?: {
-    title?: string;
   };
 }
 
@@ -30,7 +29,34 @@ function contentTypeBadge(type: string) {
   return colours[type] ?? 'bg-gray-100 text-gray-800';
 }
 
-export default function ReviewQueueTable({ items }: ReviewQueueTableProps) {
+export default function ReviewQueueTable({ items: initialItems }: ReviewQueueTableProps) {
+  const [items, setItems] = useState(initialItems);
+  const [approving, setApproving] = useState<Set<string>>(new Set());
+
+  async function handleApprove(item: QueueItem) {
+    const key = item.content_id;
+    setApproving((prev) => new Set(prev).add(key));
+    try {
+      const res = await fetch(`/api/review/${encodeURIComponent(item.content_id)}/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content_type: item.content_type }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // Remove from local list immediately
+      setItems((prev) => prev.filter((i) => i.content_id !== item.content_id));
+    } catch (err) {
+      console.error('Approve failed', err);
+      alert('Failed to approve item. Please try again.');
+    } finally {
+      setApproving((prev) => {
+        const next = new Set(prev);
+        next.delete(key);
+        return next;
+      });
+    }
+  }
+
   if (items.length === 0) {
     return (
       <div className="text-center py-16 text-gray-400">
@@ -60,8 +86,9 @@ export default function ReviewQueueTable({ items }: ReviewQueueTableProps) {
             const minConf = item.tags && item.tags.length > 0
               ? Math.min(...item.tags.map((t) => t.confidence))
               : null;
-            const title = item.metadata?.title ?? item.content_id.slice(0, 8) + '…';
+            const title = item.title ?? item.content_id.slice(0, 8) + '…';
             const submittedAt = new Date(item.created_at).toLocaleString();
+            const isApproving = approving.has(item.content_id);
 
             return (
               <tr key={item.content_id} className="hover:bg-gray-50 transition-colors">
@@ -80,12 +107,21 @@ export default function ReviewQueueTable({ items }: ReviewQueueTableProps) {
                 </td>
                 <td className="py-3 pr-4 text-gray-500 whitespace-nowrap">{submittedAt}</td>
                 <td className="py-3">
-                  <Link
-                    href={`/results/${item.content_id}?contentType=${item.content_type}`}
-                    className="text-[#1652a0] hover:underline font-medium text-xs"
-                  >
-                    View →
-                  </Link>
+                  <div className="flex items-center gap-3">
+                    <Link
+                      href={`/results/${item.content_id}?contentType=${item.content_type}`}
+                      className="text-[#1652a0] hover:underline font-medium text-xs"
+                    >
+                      View →
+                    </Link>
+                    <button
+                      onClick={() => handleApprove(item)}
+                      disabled={isApproving}
+                      className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {isApproving ? 'Approving…' : 'Approve'}
+                    </button>
+                  </div>
                 </td>
               </tr>
             );

@@ -298,6 +298,7 @@ async function storeResults(
       Item: {
         content_id: content.content_id,
         content_type: content.content_type,
+        title: content.metadata?.title,
         status: ProcessingStatus.COMPLETED,
         tags,
         needs_review: routing.needs_review,

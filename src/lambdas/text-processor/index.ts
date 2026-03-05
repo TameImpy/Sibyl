@@ -1,3 +1,4 @@
+// Model: claude-3-5-sonnet
 import { SQSEvent, SQSHandler, Context } from 'aws-lambda';
 import { BedrockRuntimeClient } from '@aws-sdk/client-bedrock-runtime';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
@@ -234,6 +235,7 @@ async function storeResults(
       Item: {
         content_id: content.content_id,
         content_type: content.content_type,
+        title: content.metadata?.title,
         status: ProcessingStatus.COMPLETED,
         tags,
         // Routing fields (POC-004) — needs_review is the needs-review-index GSI partition key

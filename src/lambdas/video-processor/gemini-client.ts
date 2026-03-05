@@ -297,7 +297,21 @@ function buildMultimodalPrompt(
 Examine the following timestamps and return tag analysis for each:
 ${frameList}
 
-IMPORTANT: Return ONLY tags from this approved taxonomy — never invent new tags:
+TAXONOMY CONSTRAINTS:
+- Return ONLY tags from the approved taxonomy below — never invent new tags.
+- The taxonomy is structured as verticals → categories → tags. Use ONLY the leaf tag names (e.g. "comfort-food", "food-storage"). Do NOT use vertical names or category names as tags — they are organisational headings, not valid tags.
+
+CONFIDENCE SCORING GUIDE:
+- 0.9–1.0: Tag is central to what is shown or discussed at this timestamp
+- 0.7–0.89: Tag is clearly relevant but not the main focus
+- 0.5–0.69: Tag is present or somewhat relevant
+- Below 0.5: Do not include
+
+BREADTH-FIRST SCAN:
+- Scan ALL taxonomy verticals (Food & Cooking, Home & Garden, Parenting & Family, Entertainment, Automotive, History & Biography) for every timestamp — do not limit tagging to the most obvious primary vertical.
+- Do not anchor on the dominant theme of the video as a whole. Each timestamp should be evaluated independently; surface cross-vertical tags whenever the visual content, activity, or spoken topic warrants them.
+
+APPROVED TAXONOMY (use ONLY these tags):
 ${taxonomyText}
 
 Return up to ${maxTags} tags per timestamp.

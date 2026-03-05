@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { docClient, TAGS_TABLE_NAME } from '@/lib/aws';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   const limit = Math.min(Number(req.nextUrl.searchParams.get('limit') ?? '20'), 100);
 

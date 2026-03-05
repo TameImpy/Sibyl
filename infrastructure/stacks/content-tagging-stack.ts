@@ -144,7 +144,11 @@ export class ContentTaggingStack extends cdk.Stack {
       TEXT_QUEUE_URL: textQueue.queueUrl,
       VIDEO_QUEUE_URL: videoQueue.queueUrl,
       DLQ_URL: dlq.queueUrl,
-      BEDROCK_MODEL_ID: 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
+      // Versioned cross-region inference profile ID — the short-form
+      // 'us.anthropic.claude-sonnet-4-6' is listed by list-inference-profiles
+      // but Bedrock Runtime rejects it with ValidationException at invoke time.
+      // The versioned ID is required and confirmed working via CLI.
+      BEDROCK_MODEL_ID: 'us.anthropic.claude-sonnet-4-20250514-v1:0',
       BEDROCK_REGION: 'us-east-1',
       LOG_LEVEL: 'info',
       ENABLE_STRUCTURED_LOGGING: 'true',
@@ -232,16 +236,28 @@ export class ContentTaggingStack extends cdk.Stack {
     costTable.grantReadWriteData(textProcessor);
     costTable.grantReadWriteData(videoProcessor);
 
-    // Bedrock permissions for text processor
-    // Cross-region inference profile requires both the profile ARN and the
-    // underlying foundation model across all regions it may route to
+    // Bedrock permissions for text processor.
+    //
+    // The cross-region inference profile 'us.anthropic.claude-sonnet-4-20250514-v1:0'
+    // routes requests across us-east-1, us-east-2, and us-west-2. IAM must permit
+    // bedrock:InvokeModel on:
+    //   1. The inference profile ARN itself (account-scoped, source region)
+    //   2. The foundation model ARN in *every* region the profile may route to
+    //
+    // Previously us-east-2 was missing, causing AccessDeniedException when
+    // Bedrock routed to that region. The foundation model slug also lacked the
+    // version suffix, which must match the exact modelId registered in Bedrock.
     textProcessor.addToRolePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: ['bedrock:InvokeModel'],
         resources: [
-          `arn:aws:bedrock:${this.region}:${this.account}:inference-profile/us.anthropic.claude-3-5-haiku-20241022-v1:0`,
-          `arn:aws:bedrock:*::foundation-model/anthropic.claude-3-5-haiku-20241022-v1:0`,
+          // Inference profile (account-scoped, deployed region)
+          `arn:aws:bedrock:${this.region}:${this.account}:inference-profile/us.anthropic.claude-sonnet-4-20250514-v1:0`,
+          // Foundation model in all three US regions the profile routes across
+          'arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0',
+          'arn:aws:bedrock:us-east-2::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0',
+          'arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0',
         ],
       })
     );
