@@ -196,7 +196,7 @@ export class ContentTaggingStack extends cdk.Stack {
       entry: path.join(__dirname, '../../src/lambdas/video-processor/index.ts'),
       handler: 'handler',
       timeout: cdk.Duration.seconds(300),
-      memorySize: 3008, // 3GB — full video buffer (435MB file + runtime overhead) requires headroom
+      memorySize: 3008, // 3GB — accommodates video buffers up to ~1 GB in memory (peak = 1x raw size + runtime overhead after streaming fix)
       reservedConcurrentExecutions: environment === 'prod' ? 50 : undefined, // Only reserve in prod
       environment: {
         ...sharedEnv,

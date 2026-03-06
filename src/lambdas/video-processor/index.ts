@@ -56,17 +56,35 @@ function parseS3Url(url: string): { bucket: string; key: string } {
 
 async function downloadFromS3(bucket: string, key: string): Promise<{ bytes: Buffer; mimeType: string }> {
   const res = await s3Client.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
-  const chunks: Uint8Array[] = [];
-  for await (const chunk of res.Body as AsyncIterable<Uint8Array>) {
-    chunks.push(chunk);
-  }
+
   const ext = key.split('.').pop()?.toLowerCase() ?? 'mp4';
   const mime: Record<string, string> = {
     mp4: 'video/mp4',
     mov: 'video/quicktime',
     avi: 'video/x-msvideo',
   };
-  return { bytes: Buffer.concat(chunks), mimeType: mime[ext] ?? 'video/mp4' };
+  const mimeType = mime[ext] ?? 'video/mp4';
+
+  // Pre-allocate a single buffer using the known Content-Length so we never
+  // hold two copies of the video simultaneously (the chunks[] array + the
+  // Buffer.concat result would peak at 2× file size).
+  const contentLength = res.ContentLength ?? 0;
+  if (contentLength > 0) {
+    const buffer = Buffer.allocUnsafe(contentLength);
+    let offset = 0;
+    for await (const chunk of res.Body as AsyncIterable<Uint8Array>) {
+      (chunk as Buffer).copy(buffer, offset);
+      offset += chunk.length;
+    }
+    return { bytes: buffer, mimeType };
+  }
+
+  // Fallback for unknown size (S3 always returns Content-Length for real objects).
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of res.Body as AsyncIterable<Uint8Array>) {
+    chunks.push(chunk);
+  }
+  return { bytes: Buffer.concat(chunks), mimeType };
 }
 
 /**

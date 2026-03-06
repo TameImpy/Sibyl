@@ -12,6 +12,7 @@
  */
 
 import axios from 'axios';
+import { PassThrough } from 'stream';
 import { TagResult } from '../../shared/types';
 import { getLogger } from '../../shared/utils';
 import { FrameSample } from './frame-aggregator';
@@ -126,7 +127,18 @@ export async function invokeGeminiForTagging(
 // ---------------------------------------------------------------------------
 
 /**
- * Upload video bytes to the Gemini File API using multipart upload.
+ * Upload video bytes to the Gemini File API using a streamed multipart body.
+ *
+ * Previously this function used Buffer.concat() to build the complete multipart
+ * body before sending. For a 660 MB video that caused a second 660 MB heap
+ * allocation simultaneously with the original download buffer, exhausting the
+ * 3008 MB Lambda memory limit and producing Runtime.OutOfMemory.
+ *
+ * The fix pipes a Node.js PassThrough stream to axios so the HTTP client writes
+ * chunks directly to the socket without ever holding a second full copy of the
+ * video data in the heap. Peak memory is now ~1x video size + runtime overhead
+ * instead of ~2x.
+ *
  * Returns the file URI (e.g. "files/abc123").
  */
 async function uploadVideoToGemini(
@@ -139,28 +151,43 @@ async function uploadVideoToGemini(
   const metadataPart = JSON.stringify({ file: { display_name: displayName } });
   const boundary = `sibyl-boundary-${Date.now()}`;
 
-  const bodyParts: Buffer[] = [
-    Buffer.from(
-      `--${boundary}\r\nContent-Type: application/json; charset=utf-8\r\n\r\n${metadataPart}\r\n`
-    ),
-    Buffer.from(`--${boundary}\r\nContent-Type: ${mimeType}\r\n\r\n`),
-    videoBytes,
-    Buffer.from(`\r\n--${boundary}--`),
-  ];
-  const body = Buffer.concat(bodyParts);
+  const preamble = Buffer.from(
+    `--${boundary}\r\nContent-Type: application/json; charset=utf-8\r\n\r\n${metadataPart}\r\n` +
+    `--${boundary}\r\nContent-Type: ${mimeType}\r\n\r\n`
+  );
+  const epilogue = Buffer.from(`\r\n--${boundary}--`);
+
+  // Total byte count must be declared up-front so the Gemini API accepts the
+  // request; the server rejects uploads without an accurate Content-Length.
+  const contentLength = preamble.length + videoBytes.length + epilogue.length;
+
+  // Write each part separately — never concatenate the full video into a new
+  // buffer. Buffer.concat([preamble, videoBytes, epilogue]) would create a
+  // second ~file-size allocation on top of the existing videoBytes buffer,
+  // pushing peak memory to 2× file size and causing Runtime.OutOfMemory for
+  // large files. Writing parts individually keeps only the original buffer live.
+  const bodyStream = new PassThrough();
+  bodyStream.write(preamble);
+  bodyStream.write(videoBytes);
+  bodyStream.end(epilogue);
 
   const response = await axios.post(
     `${apiUrl}/upload/v1beta/files?uploadType=multipart`,
-    body,
+    bodyStream,
     {
       headers: {
         'Content-Type': `multipart/related; boundary=${boundary}`,
         'X-Goog-Upload-Protocol': 'multipart',
         'x-goog-api-key': apiKey,
-        'Content-Length': String(body.length),
+        'Content-Length': String(contentLength),
       },
-      timeout: 120_000,
+      // Allow axios to send bodies larger than its 10 MB default.
       maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+      // Generous timeout: Gemini File API ingestion of a 660 MB file can take
+      // 60–90 seconds on the upload leg alone; 240 s leaves headroom within
+      // the 300 s Lambda timeout while still catching genuine hangs.
+      timeout: 240_000,
     }
   );
 
