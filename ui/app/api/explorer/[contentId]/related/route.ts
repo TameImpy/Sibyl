@@ -14,7 +14,7 @@ async function fetchAllComplete(): Promise<TaggedItem[]> {
         IndexName: 'status-index',
         KeyConditionExpression: '#s = :s',
         ExpressionAttributeNames: { '#s': 'status' },
-        ExpressionAttributeValues: { ':s': 'complete' },
+        ExpressionAttributeValues: { ':s': 'completed' },
         ScanIndexForward: false,
         Limit: 500,
         ExclusiveStartKey: lastKey,
