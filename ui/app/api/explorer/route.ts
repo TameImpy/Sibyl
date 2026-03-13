@@ -5,6 +5,7 @@ import { docClient, TAGS_TABLE_NAME } from '@/lib/aws';
 interface DynamoItem {
   content_id: string;
   content_type: string;
+  content_url?: string;
   title?: string;
   status?: string;
   tags?: Array<{ tag: string; confidence: number }>;
@@ -17,7 +18,7 @@ async function fetchByStatus(cursor?: string): Promise<DynamoItem[]> {
     IndexName: 'status-index',
     KeyConditionExpression: '#s = :s',
     ExpressionAttributeNames: { '#s': 'status' },
-    ExpressionAttributeValues: { ':s': 'complete' },
+    ExpressionAttributeValues: { ':s': 'completed' },
     ScanIndexForward: false,
     Limit: 500, // over-fetch for in-memory filtering
   };
@@ -61,7 +62,7 @@ export async function GET(req: NextRequest) {
     if (typeParam) {
       items = await fetchByContentType(typeParam);
       // content-type-index may return all statuses; filter to complete only
-      items = items.filter((i) => i.status === 'complete');
+      items = items.filter((i) => i.status === 'completed');
     } else {
       items = await fetchByStatus(cursor);
     }
@@ -80,6 +81,7 @@ export async function GET(req: NextRequest) {
     const response = page.map((item) => ({
       content_id: item.content_id,
       content_type: item.content_type,
+      content_url: item.content_url,
       title: item.title ?? item.content_id,
       tags: (item.tags ?? []).map((t) => t.tag),
       tag_count: (item.tags ?? []).length,

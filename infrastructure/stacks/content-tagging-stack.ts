@@ -283,8 +283,7 @@ export class ContentTaggingStack extends cdk.Stack {
     // Connect SQS to Lambda
     textProcessor.addEventSource(
       new SqsEventSource(textQueue, {
-        batchSize: 10, // Process up to 10 messages per invocation
-        maxBatchingWindow: cdk.Duration.seconds(5),
+        batchSize: 1, // One message per invocation — avoids concurrent Bedrock calls causing ThrottlingException
         reportBatchItemFailures: true, // Only delete successful messages
       })
     );

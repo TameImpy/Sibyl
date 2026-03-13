@@ -5,6 +5,10 @@ import ContentCard, { ContentCardItem } from '@/components/ContentCard';
 import TagFilter from '@/components/TagFilter';
 import TypeFilter, { ContentType } from '@/components/TypeFilter';
 import RelatedPanel from '@/components/RelatedPanel';
+import AnalyticsPanel from '@/components/AnalyticsPanel';
+import CostCalculatorPanel from '@/components/CostCalculatorPanel';
+
+type Tab = 'content' | 'analytics' | 'calculator';
 
 interface ExplorerResponse {
   items: ContentCardItem[];
@@ -16,6 +20,7 @@ export default function ExplorerPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<Tab>('content');
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedType, setSelectedType] = useState<ContentType>('all');
@@ -45,7 +50,12 @@ export default function ExplorerPage() {
     fetchItems();
   }, [fetchItems]);
 
-  // Compute per-type counts from current unfiltered items (approximate — same fetch)
+  // Clicking a tag row in the analytics panel adds it to the tag filter and switches to content tab
+  function handleAnalyticsTagClick(tag: string) {
+    setSelectedTags((prev) => (prev.includes(tag) ? prev : [...prev, tag]));
+    setActiveTab('content');
+  }
+
   const typeCounts = items.reduce<Partial<Record<ContentType, number>>>(
     (acc, item) => {
       const t = item.content_type as ContentType;
@@ -76,48 +86,104 @@ export default function ExplorerPage() {
               {selectedTags.length > 0 && ` matching ${selectedTags.length} tag${selectedTags.length > 1 ? 's' : ''}`}
             </p>
           </div>
-          <TypeFilter selected={selectedType} counts={typeCounts} onChange={setSelectedType} />
-        </div>
+          <div className="flex items-center gap-4">
+            <TypeFilter selected={selectedType} counts={typeCounts} onChange={setSelectedType} />
 
-        {/* Content + Related panel */}
-        <div className="flex flex-1 overflow-hidden">
-          {/* Results grid */}
-          <div className="flex-1 overflow-y-auto px-8 py-6">
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700 mb-4">
-                {error}
-              </div>
-            )}
-
-            {!loading && items.length === 0 && !error && (
-              <div className="flex flex-col items-center justify-center py-24 text-gray-400">
-                <svg className="w-12 h-12 mb-4 text-gray-200" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803M10.5 7.5v6m3-3h-6" />
-                </svg>
-                <p className="font-medium mb-1">No content found</p>
-                <p className="text-sm">Try removing some filters or selecting a different content type.</p>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {items.map((item) => (
-                <ContentCard
-                  key={`${item.content_id}-${item.content_type}`}
-                  item={item}
-                  selected={selectedItem?.content_id === item.content_id}
-                  onClick={(i) => setSelectedItem((prev) => (prev?.content_id === i.content_id ? null : i))}
-                />
-              ))}
+            {/* Tab toggle */}
+            <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
+              <button
+                onClick={() => setActiveTab('content')}
+                className={`px-4 py-1.5 font-medium transition-colors ${
+                  activeTab === 'content'
+                    ? 'bg-[#1652a0] text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Content
+              </button>
+              <button
+                onClick={() => setActiveTab('analytics')}
+                className={`px-4 py-1.5 font-medium transition-colors border-l border-gray-200 ${
+                  activeTab === 'analytics'
+                    ? 'bg-[#1652a0] text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Analytics
+              </button>
+              <button
+                onClick={() => setActiveTab('calculator')}
+                className={`px-4 py-1.5 font-medium transition-colors border-l border-gray-200 ${
+                  activeTab === 'calculator'
+                    ? 'bg-[#1652a0] text-white'
+                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Cost Calculator
+              </button>
             </div>
           </div>
-
-          {/* Related panel */}
-          {selectedItem && (
-            <aside className="w-80 shrink-0 border-l border-gray-200 bg-gray-50 px-5 py-6 overflow-y-auto">
-              <RelatedPanel item={selectedItem} onClose={() => setSelectedItem(null)} />
-            </aside>
-          )}
         </div>
+
+        {/* Tab: Analytics */}
+        {activeTab === 'analytics' && (
+          <div className="flex-1 overflow-y-auto px-8 py-6">
+            <AnalyticsPanel
+              selectedTags={selectedTags}
+              selectedType={selectedType}
+              onTagClick={handleAnalyticsTagClick}
+            />
+          </div>
+        )}
+
+        {/* Tab: Cost Calculator */}
+        {activeTab === 'calculator' && (
+          <div className="flex-1 overflow-y-auto bg-gray-50">
+            <CostCalculatorPanel />
+          </div>
+        )}
+
+        {/* Tab: Content + Related panel */}
+        {activeTab === 'content' && (
+          <div className="flex flex-1 overflow-hidden">
+            {/* Results grid */}
+            <div className="flex-1 overflow-y-auto px-8 py-6">
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700 mb-4">
+                  {error}
+                </div>
+              )}
+
+              {!loading && items.length === 0 && !error && (
+                <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+                  <svg className="w-12 h-12 mb-4 text-gray-200" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803M10.5 7.5v6m3-3h-6" />
+                  </svg>
+                  <p className="font-medium mb-1">No content found</p>
+                  <p className="text-sm">Try removing some filters or selecting a different content type.</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {items.map((item) => (
+                  <ContentCard
+                    key={`${item.content_id}-${item.content_type}`}
+                    item={item}
+                    selected={selectedItem?.content_id === item.content_id}
+                    onClick={(i) => setSelectedItem((prev) => (prev?.content_id === i.content_id ? null : i))}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Related panel */}
+            {selectedItem && (
+              <aside className="w-80 shrink-0 border-l border-gray-200 bg-gray-50 px-5 py-6 overflow-y-auto">
+                <RelatedPanel item={selectedItem} onClose={() => setSelectedItem(null)} />
+              </aside>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

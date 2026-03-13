@@ -117,7 +117,7 @@ This is where the system gets noticeably smarter than a one-size-fits-all approa
 - **Archived JSON records** focus on structured data fields, classification signals, and key descriptors already present in the record.
 
 When we want to improve how podcasts are tagged, we only edit the podcast brief. The shared rules, the article instructions, and everything else remains untouched. This is what modularity means in practice.
-
+ƒlayer
 **Layer 3 -- Runtime Context (the "Assignment Envelope")**
 
 This is the only layer that changes with every single request. It contains:

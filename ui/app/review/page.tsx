@@ -4,7 +4,7 @@ async function getQueueItems() {
   try {
     // Server component — call the API route (or directly call DynamoDB in a real app)
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/queue?limit=50`, {
+    const res = await fetch(`${baseUrl}/api/queue?limit=100`, {
       cache: 'no-store',
     });
     if (!res.ok) return { items: [], error: `HTTP ${res.status}` };

@@ -93,8 +93,11 @@ export class MetricsCollector {
       'us.anthropic.claude-3-5-sonnet-20241022-v2:0': { input: 0.003, output: 0.015 },
       'anthropic.claude-sonnet-4-6': { input: 0.003, output: 0.015 },
       'us.anthropic.claude-sonnet-4-6': { input: 0.003, output: 0.015 },
+      'us.anthropic.claude-sonnet-4-20250514-v1:0': { input: 0.003, output: 0.015 },
       'gemini-1.5-flash': { input: 0.000075, output: 0.0003 },
       'gemini-1.5-pro': { input: 0.00125, output: 0.005 },
+      'gemini-2.5-flash': { input: 0.00015, output: 0.0006 },
+      'gemini-2.5-flash-preview-05-20': { input: 0.00015, output: 0.0006 },
     };
 
     const modelPricing = pricing[model] || { input: 0.001, output: 0.002 }; // Default fallback

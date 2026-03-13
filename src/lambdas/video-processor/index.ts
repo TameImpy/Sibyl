@@ -1,4 +1,4 @@
-import { SQSEvent, SQSHandler, Context } from 'aws-lambda';
+import { SQSEvent, SQSBatchResponse, Context } from 'aws-lambda';
 import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
@@ -100,17 +100,19 @@ async function downloadFromS3(bucket: string, key: string): Promise<{ bytes: Buf
  *  - Circuit breaker + retry with exponential backoff
  *  - Structured logging for CloudWatch Insights
  */
-export const handler: SQSHandler = async (event: SQSEvent, context: Context): Promise<void> => {
+export async function handler(event: SQSEvent, context: Context): Promise<SQSBatchResponse> {
   setLambdaContext(context.awsRequestId, context.functionName, context.functionVersion);
 
   if (!config.enableVideoProcessing) {
     logger.warn('Video processing is disabled, skipping');
-    return;
+    return { batchItemFailures: [] };
   }
 
   logger.info('Video processor started', {
     record_count: event.Records.length,
   });
+
+  const batchItemFailures: SQSBatchResponse['batchItemFailures'] = [];
 
   // Process videos sequentially to avoid overwhelming Gemini API
   for (const record of event.Records) {
@@ -118,12 +120,13 @@ export const handler: SQSHandler = async (event: SQSEvent, context: Context): Pr
       await processRecord(record.body);
     } catch (error) {
       logger.error('Failed to process video record', {}, error as Error);
-      // Continue processing other records; SQS handles individual retries
+      batchItemFailures.push({ itemIdentifier: record.messageId });
     }
   }
 
-  logger.info('Video processor completed');
-};
+  logger.info('Video processor completed', { failed: batchItemFailures.length });
+  return { batchItemFailures };
+}
 
 async function processRecord(messageBody: string): Promise<void> {
   const startTime = Date.now();
@@ -316,6 +319,7 @@ async function storeResults(
       Item: {
         content_id: content.content_id,
         content_type: content.content_type,
+        content_url: content.content_url,
         title: content.metadata?.title,
         status: ProcessingStatus.COMPLETED,
         tags,

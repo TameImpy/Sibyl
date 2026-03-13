@@ -1,5 +1,5 @@
 // Model: claude-3-5-sonnet
-import { SQSEvent, SQSHandler, Context } from 'aws-lambda';
+import { SQSEvent, SQSBatchResponse, Context } from 'aws-lambda';
 import { BedrockRuntimeClient } from '@aws-sdk/client-bedrock-runtime';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
@@ -49,8 +49,10 @@ const bedrockCircuitBreaker = getCircuitBreaker('bedrock', {
  *  - Cost tracking (tokens → USD via MetricsCollector.calculateCost)
  *  - Circuit breaker + retry with exponential backoff
  *  - Structured logging for CloudWatch Insights
+ *  - reportBatchItemFailures: failed messages are returned so SQS retries them
+ *    (previously the handler returned void, causing SQS to delete throttled messages)
  */
-export const handler: SQSHandler = async (event: SQSEvent, context: Context): Promise<void> => {
+export async function handler(event: SQSEvent, context: Context): Promise<SQSBatchResponse> {
   setLambdaContext(context.awsRequestId, context.functionName, context.functionVersion);
 
   logger.info('Text processor started', {
@@ -58,18 +60,29 @@ export const handler: SQSHandler = async (event: SQSEvent, context: Context): Pr
   });
 
   const results = await Promise.allSettled(
-    event.Records.map((record) => processRecord(record.body))
+    event.Records.map((record) => processRecord(record.body).then(() => record.messageId))
   );
 
-  const successful = results.filter((r) => r.status === 'fulfilled').length;
-  const failed = results.filter((r) => r.status === 'rejected').length;
+  const batchItemFailures: SQSBatchResponse['batchItemFailures'] = [];
+  let successful = 0;
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    if (result.status === 'rejected') {
+      batchItemFailures.push({ itemIdentifier: event.Records[i].messageId });
+    } else {
+      successful++;
+    }
+  }
 
   logger.info('Text processor completed', {
     total: results.length,
     successful,
-    failed,
+    failed: batchItemFailures.length,
   });
-};
+
+  return { batchItemFailures };
+}
 
 async function processRecord(messageBody: string): Promise<void> {
   const startTime = Date.now();
@@ -235,6 +248,7 @@ async function storeResults(
       Item: {
         content_id: content.content_id,
         content_type: content.content_type,
+        content_url: content.content_url,
         title: content.metadata?.title,
         status: ProcessingStatus.COMPLETED,
         tags,
