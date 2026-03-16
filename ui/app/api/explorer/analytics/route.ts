@@ -52,7 +52,7 @@ async function fetchAllCompleteItems(): Promise<DynamoItem[]> {
 
 async function fetchRevenueRows(pool: NonNullable<Awaited<ReturnType<typeof getAzureSqlPool>>>): Promise<RevenueRow[]> {
   const result = await pool.request().query(
-    'SELECT url, daily_ad_revenue, page_views, users FROM content_revenue'
+    'SELECT url, SUM(ad_revenue) AS daily_ad_revenue, SUM(page_views) AS page_views, SUM(users) AS users FROM dbo.content_metrics GROUP BY url'
   );
   return result.recordset as RevenueRow[];
 }
